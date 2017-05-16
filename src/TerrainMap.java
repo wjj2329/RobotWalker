@@ -1,12 +1,18 @@
 /**
  * Created by williamjones on 5/15/17.
+ * Terrain Map: Map of the surrounding terrain.
  */
-public class TerrainMap {
+public class TerrainMap
+{
+    private Vector[][] myMap;
 
-    Vector[][] mymap;
-    TerrainMap(Vector[][] mymap)
+    TerrainMap(Vector[][] myMap)
     {
-        this.mymap=mymap;
+        this.myMap =myMap;
     }
 
+    public Vector[][] getMyMap()
+    {
+        return myMap;
+    }
 }

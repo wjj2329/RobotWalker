@@ -1,9 +1,11 @@
 /**
  * Created by williamjones on 5/15/17.
+ * Represents a coordinate position on the terrain map.
  */
-public class Coordinate {
-    int x;
-    int y;
+public class Coordinate
+{
+    private int x;
+    private int y;
     public Coordinate(int x, int y)
     {
         this.x=x;
