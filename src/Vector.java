@@ -2,19 +2,24 @@
  * Created by williamjones on 5/15/17.
  * Class designed to represent an arrow with varying strength.
  */
-public class Vector
-{
+public class Vector {
     /**
      * Index of the vector in the 2D array
      */
     private Coordinate location;
 
     /**
-     * Length: represents the strength of the arrow,
-     *  which will determine how much the robot is
-     *  attracted or repelled.
+     * ΔX: represents the strength of the arrow in the X direction,
+     * which will determine how much the robot is
+     * attracted or repelled.
      */
-    private double length;
+    private double ΔX;
+
+    /**
+     * Same as ΔX, but for the Y-coordinate.
+     * :D
+     */
+    private double ΔY;
 
     /**
      * Angle: represents the direction.
@@ -27,8 +32,19 @@ public class Vector
     public Vector(Coordinate location, double length, double angle)
     {
         this.location = location;
-        this.length = length;
+        this.ΔX = length;
         this.angle = angle;
+    }
+
+    /**
+     * Polymorphic constructor for Vector.
+     *  The thing is, we may not know what
+     *  the angle or ΔX are when we first
+     *  start out, and we might have to compute them later.
+     */
+    public Vector(Coordinate location)
+    {
+
     }
 
     /**
@@ -40,13 +56,33 @@ public class Vector
         return location;
     }
 
-    public double getLength()
+    public double getΔX()
     {
-        return length;
+        return ΔX;
     }
 
     public double getAngle()
     {
         return angle;
+    }
+
+    public void setΔX(double ΔX)
+    {
+        this.ΔX = ΔX;
+    }
+
+    public void setAngle(double angle)
+    {
+        this.angle = angle;
+    }
+
+    public double getΔY()
+    {
+        return ΔY;
+    }
+
+    public void setΔY(double ΔY)
+    {
+        this.ΔY = ΔY;
     }
 }

@@ -21,6 +21,11 @@ public class Robot
     private TerrainMap randomField;
 
     /**
+     * Where the robot currently is in our map
+     */
+    private Coordinate currentPosition;
+
+    /**
      * Public default constructor for Robot.
      */
     public Robot()

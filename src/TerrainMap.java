@@ -5,6 +5,7 @@
 public class TerrainMap
 {
     private Vector[][] myMap;
+    private Dimensions dimensions;
 
     TerrainMap(Vector[][] myMap)
     {
@@ -14,5 +15,15 @@ public class TerrainMap
     public Vector[][] getMyMap()
     {
         return myMap;
+    }
+
+    public Dimensions getDimensions()
+    {
+        return dimensions;
+    }
+
+    public void setDimensions(Dimensions dimensions)
+    {
+        this.dimensions = dimensions;
     }
 }
