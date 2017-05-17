@@ -98,7 +98,7 @@ public class MachineVision
         }
         else
         {
-            // You broke it, son.
+            // You broke it, son. You failed
             System.out.println("You suck.");
         }
     }
