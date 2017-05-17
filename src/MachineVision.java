@@ -14,6 +14,11 @@ public class MachineVision
 
     /**
      * Generates map for the potential field
+     * Coded by ALEX
+     * I like trains
+     *
+     * In the MOVE FUNCTION in the ROBOT CLASS, we compute where to move
+     *  based on the coordinates given in the obstacle and goal maps.
      */
     public TerrainMap generateObstacleMap()
     {

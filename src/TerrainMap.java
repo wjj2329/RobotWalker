@@ -8,7 +8,7 @@ public class TerrainMap
 
     TerrainMap(Vector[][] myMap)
     {
-        this.myMap =myMap;
+        this.myMap = myMap;
     }
 
     public Vector[][] getMyMap()

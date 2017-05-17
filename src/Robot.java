@@ -21,7 +21,7 @@ public class Robot
     private TerrainMap randomField;
 
     /**
-     *
+     * Public default constructor for Robot.
      */
     public Robot()
     {
