@@ -33,6 +33,11 @@ public class Robot
 
     }
 
+    public  int[] calculateSpeeds()
+    {
+        return null;
+    }
+
     /**
      * Getters and setters:
      */

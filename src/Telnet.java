@@ -12,7 +12,7 @@ import java.net.Socket;
 public class Telnet {
 
 
-    public String  where() throws IOException {
+    public String  sendWhere() throws IOException {
         Socket pingsocket=null;
         PrintWriter mywriter=null;
         BufferedReader myreader=null;
@@ -44,7 +44,7 @@ public class Telnet {
 
     }
 
-    public String speed(int speed1, int speed2) throws IOException
+    public String sendSpeed(int speed1, int speed2) throws IOException
     {
         Socket pingsocket=null;
         PrintWriter mywriter=null;

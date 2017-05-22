@@ -4,6 +4,6 @@
 public class Decoder {
       public static void setmymapsfromjson(Robot r, String json)
       {
-          //TerrainMap
+          //TerrainMap  CREATE THE THREE MAPS FOR THE ROBOT
       }
 }

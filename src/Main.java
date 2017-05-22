@@ -12,7 +12,14 @@ public class Main
         Telnet connection=new Telnet();
         while(true)
         {
-            String action =connection.where();
+           Decoder.setmymapsfromjson(r, connection.sendWhere());
+           int directions[]=r.calculateSpeeds();
+           connection.sendSpeed(directions[0], directions[1]);
+           if(directions[0]==0&&directions[1]==0)
+           {
+               connection.shutdown();
+               return;
+           }
 
         }
     }
