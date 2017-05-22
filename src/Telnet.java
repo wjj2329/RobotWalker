@@ -8,15 +8,19 @@ import java.net.Socket;
 
 /**
  * Created by williamjones on 5/21/17.
+ * Telnet client.
  */
-public class Telnet {
+public class Telnet
+{
 
 
-    public String  sendWhere() throws IOException {
+    public String sendWhere() throws IOException
+    {
         Socket pingsocket=null;
         PrintWriter mywriter=null;
         BufferedReader myreader=null;
-        try{
+        try
+        {
             pingsocket=new Socket("0.0.0.0", 5555);
             mywriter=new PrintWriter(pingsocket.getOutputStream(), true);
             myreader=new BufferedReader((new InputStreamReader(pingsocket.getInputStream())));

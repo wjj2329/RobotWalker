@@ -60,8 +60,8 @@ public class MachineVision
                 // Because the agent will only be using the method if it's at the cell containing the
                 // vector that we're currently analyzing. So it will in effect be the same thing.
 
-                double distanceFromObstacleToVector = PhysUtils.distance(cur.getLocation(), obstacle.getLocation());
-                cur.setAngle(PhysUtils.obstacleAngle(obstacle.getLocation(), cur.getLocation()));
+                double distanceFromObstacleToVector = PhysUtils.distance(cur.getLocation(), obstacle.getCenter());
+                cur.setAngle(PhysUtils.obstacleAngle(obstacle.getCenter(), cur.getLocation()));
                 double θ = cur.getAngle();
                 setΔXAndΔY(θ, distanceFromObstacleToVector, spreadOfField, obstacleRadius, computeβ(), cur);
             }
@@ -98,7 +98,7 @@ public class MachineVision
         }
         else
         {
-            // You broke it, son. You failed
+            // You broke it, son. You failed. why, oh why have you failed me?
             System.out.println("You suck.");
         }
     }

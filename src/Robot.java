@@ -29,7 +29,8 @@ public class Robot
     /**
      * Public default constructor for Robot.
      */
-    public Robot() {
+    public Robot()
+    {
 
     }
 
