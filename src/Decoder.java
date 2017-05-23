@@ -1,4 +1,5 @@
 import com.google.gson.Gson;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -11,6 +12,18 @@ import java.util.Iterator;
 public class Decoder
 {
       /**
+       * Our machine vision class used to create maps and such
+       */
+      private static MachineVision machineVision;
+
+      /**
+       * Default constructor
+       */
+      public Decoder()
+      {
+            machineVision = new MachineVision();
+      }
+      /**
        * Comes from WHERE command
        * @param r: our robot
        * @param json: the commands in json format, to be converted
@@ -22,23 +35,44 @@ public class Decoder
             // Robot orientation, corners, center, and time; obstacle locations, corners, and center
             JSONObject singMeASongOfJSON = new JSONObject(json);
             JSONObject robot = singMeASongOfJSON.getJSONObject("robot");
-            double time = singMeASongOfJSON.getDouble("time");
+            JSONArray centerCoordinates = robot.getJSONArray("center");
+            double x = centerCoordinates.getDouble(0);
+            double y = centerCoordinates.getDouble(1);
+            // is this going to screw everything up? :(
+            r.setCurrentCenterPosition(new Coordinate((int)x, (int)y));
+            // do we need this? :o
+            double elapsedTime = singMeASongOfJSON.getDouble("time");
 
             // Please bear in mind that one obstacle will actually become our goal!
             ArrayList<Obstacle> allMyObstacles = new ArrayList<>();
-            // get all the keys
-            // timestamp
+
             final Iterator<String> keys = singMeASongOfJSON.keys();
             Gson yourMomUsesGson = new Gson();
             // This does get rid of the robot and time objects right??
             while (keys.hasNext())
             {
                   final String key = keys.next();
-                  allMyObstacles.add(yourMomUsesGson.fromJson(singMeASongOfJSON.get(key).toString(),
-                          Obstacle.class));
+                  Obstacle newObstacle = yourMomUsesGson.fromJson(singMeASongOfJSON.get(key).toString(),
+                          Obstacle.class);
+                  // It's a square, so let's make the radius just from center to one corner
+                  newObstacle.setRadius(PhysUtils.distance(newObstacle.getCenter(), newObstacle.getCorner1()));
+                  allMyObstacles.add(newObstacle);
             }
+            machineVision.setObstacles(allMyObstacles);
+            processObstacles(allMyObstacles);
+      }
 
-            // I don't know what to do with these obstacles!
-            // Oh, right. Can't test this until we get the server running. Hmm.
+      /**
+       * Takes care of the obstacles
+       * @param obstacles the obstacles
+       */
+      private static void processObstacles(ArrayList<Obstacle> obstacles)
+      {
+            for (int i = 0; i < obstacles.size(); i++)
+            {
+                  machineVision.generateObstacleMap(1000, 1000, obstacles.get(i),
+                          30);
+                  // I think we need to adjust the spread based on how well the robot avoids the obstacles
+            }
       }
 }

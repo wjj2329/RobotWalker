@@ -12,7 +12,6 @@
  *
  * What do we do with the orientation variable?
  *
- * what physically represents a goal state?
  */
 public class Obstacle
 {

@@ -115,10 +115,13 @@ public class MachineVision
      *  This will be determining our beta scalar. It might have to do with the randomly generated
      *  field map, but I'm not entirely certain.
      *  This will probably need some parameters at some point as well.
+     *  "allows the agent to scale the strength of this field" ?
+     *
+     * Test value: 2.
      */
     private double computeβ()
     {
-        return 1;
+        return 2;
     }
 
     /**
@@ -137,5 +140,15 @@ public class MachineVision
     {
         // insert ingenious code to combine the three maps here son
         return new TerrainMap(new Vector[1][]);
+    }
+
+    public ArrayList<Obstacle> getObstacles()
+    {
+        return obstacles;
+    }
+
+    public void setObstacles(ArrayList<Obstacle> obstacles)
+    {
+        this.obstacles = obstacles;
     }
 }
