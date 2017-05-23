@@ -4,6 +4,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.Scanner;
 
 /**
  * Created by williamjones on 5/21/17.
@@ -61,6 +62,8 @@ public class Decoder
                           Obstacle.class);
                   // It's a square, so let's make the radius just from center to one corner
                   newObstacle.setRadius(PhysUtils.distance(newObstacle.getCenter(), newObstacle.getCorner1()));
+                  // Ok, so the number of the obstacle should be the key right?
+                  newObstacle.setId(Integer.parseInt(key));
                   allMyObstacles.add(newObstacle);
             }
             machineVision.setObstacles(allMyObstacles);
@@ -73,10 +76,26 @@ public class Decoder
        */
       private static void processObstacles(ArrayList<Obstacle> obstacles)
       {
+            System.out.println("Please select a GOAL among the following options:");
+            for (int j = 0; j < obstacles.size(); j++)
+            {
+                  System.out.println(obstacles.get(j).getId() + " ");
+            }
+            Scanner scanner = new Scanner(System.in);
+            int choice = Integer.parseInt(scanner.next());
+
             for (int i = 0; i < obstacles.size(); i++)
             {
-                  machineVision.generateObstacleMap(1000, 1000, obstacles.get(i),
-                          250);
+                  Obstacle cur = obstacles.get(i);
+                  if (cur.getId() != choice)
+                  {
+                        machineVision.generateObstacleMap(1000, 1000, cur, 250);
+                  }
+                  else
+                  {
+                        Goal g = new Goal(cur);
+                        machineVision.generateGoalMap(1000, 1000, g, 250);
+                  }
                   // I think we need to adjust the spread based on how well the robot avoids the obstacles
             }
       }

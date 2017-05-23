@@ -27,9 +27,70 @@ public class MachineVision
     /**
      * Generates map for the goal
      */
-    public TerrainMap generateGoalMap()
+    public TerrainMap generateGoalMap(int rowDim, int colDim, Goal goal, double spreadOfField)
     {
-        return new TerrainMap(new Vector[1][]);
+        dimensions.setRow(rowDim);
+        dimensions.setColumn(colDim);
+        double goalRadius = goal.getRadius();
+        Vector[][] goalGrid = new Vector[dimensions.getRow()][dimensions.getColumn()];
+        for (int i = 0; i < goalGrid.length; i++)
+        {
+            for (int j = 0; j < goalGrid[i].length; j++)
+            {
+                Vector cur = goalGrid[i][j];
+                double distanceFromGoalToVector = PhysUtils.distance(cur.getLocation(), goal.getCenter());
+                cur.setAngle(PhysUtils.obstacleAngle(goal.getCenter(), cur.getLocation()));
+                double θ = cur.getAngle();
+                setΔXAndΔYAcceptField(θ, distanceFromGoalToVector, spreadOfField, goalRadius, computeα(), cur);
+            }
+        }
+
+        return new TerrainMap(goalGrid);
+    }
+
+    /**
+     * Helps the robot know how to move.
+     * (╯°□°)╯
+     */
+    private void setΔXAndΔYAcceptField(double θ, double distanceFromGoalToVector, double spread,
+                                       double goalRadius, double α, Vector cur)
+    {
+        // If we're inside of the goal, don't move any longer.
+        if (distanceFromGoalToVector < goalRadius)
+        {
+            cur.setΔX(0);
+            cur.setΔY(0);
+        }
+        // If we're close to the field, make a strong potential field.
+        else if (goalRadius <= distanceFromGoalToVector && distanceFromGoalToVector <= spread + goalRadius)
+        {
+            // ∆x=α(d−r)cos(θ) and ∆y=α(d−r)sin(θ)
+            cur.setΔX(α * (distanceFromGoalToVector - goalRadius) * Math.cos(θ));
+            cur.setΔY(α * (distanceFromGoalToVector - goalRadius) * Math.sin(θ));
+        }
+        // If we're outside the goal altogether, make a very strong potential field of influence.
+        else if (distanceFromGoalToVector > spread + goalRadius)
+        {
+            //if d > s + r, then ∆x = αs cos(θ) and ∆y = αs sin(θ)
+            cur.setΔX(α * spread * Math.cos(θ));
+            cur.setΔY(α * spread * Math.sin(θ));
+        }
+        // you failed
+        else
+        {
+            System.out.println("it broke -__- ");
+            cur.setΔX(α * spread * Math.cos(θ));
+            cur.setΔY(α * spread * Math.sin(θ));
+        }
+    }
+
+    /**
+     * So that way we can adjust our value
+     *  based on this scalar.
+     */
+    private double computeα()
+    {
+        return 1;
     }
 
     /**
@@ -70,7 +131,7 @@ public class MachineVision
                 double distanceFromObstacleToVector = PhysUtils.distance(cur.getLocation(), obstacle.getCenter());
                 cur.setAngle(PhysUtils.obstacleAngle(obstacle.getCenter(), cur.getLocation()));
                 double θ = cur.getAngle();
-                setΔXAndΔY(θ, distanceFromObstacleToVector, spreadOfField, obstacleRadius, computeβ(), cur);
+                setΔXAndΔYRejectField(θ, distanceFromObstacleToVector, spreadOfField, obstacleRadius, computeβ(), cur);
             }
         }
         // generate the new coordinate here, based on previous coordinate.x + deltaX, prev.y + deltaY
@@ -81,8 +142,8 @@ public class MachineVision
      * Sets ΔX and ΔY, so the robot knows how to move.
      * Beta = scalar for the strength of this field
      */
-    private void setΔXAndΔY(double θ, double distanceFromObstacleToVector, double spreadOfField,
-                            double obstacleRadius, double β, Vector cur)
+    private void setΔXAndΔYRejectField(double θ, double distanceFromObstacleToVector, double spreadOfField,
+                                       double obstacleRadius, double β, Vector cur)
     {
         // This means we're inside of the obstacle. BAD! Get out ASAP!
         if (distanceFromObstacleToVector < obstacleRadius)

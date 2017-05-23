@@ -32,6 +32,11 @@ public class Obstacle
     private Coordinate orientation;
 
     /**
+     * ID of the obstacle, given from the JSON
+     */
+    private transient int id;
+
+    /**
      * Radius of the obstacle
      * Transient because we don't get it from the JSON
      *  (thus helping effective GSON parsing)
@@ -53,6 +58,7 @@ public class Obstacle
         this.radius = radius;
     }
 
+    //<editor-fold desc="Getters and setters">
     /**
      * Getters and setters
      */
@@ -95,4 +101,15 @@ public class Obstacle
     {
         return orientation;
     }
+
+    public int getId()
+    {
+        return id;
+    }
+
+    public void setId(int id)
+    {
+        this.id = id;
+    }
+    //</editor-fold>
 }
