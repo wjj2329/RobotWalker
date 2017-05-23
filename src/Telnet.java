@@ -12,92 +12,57 @@ import java.net.Socket;
  */
 public class Telnet
 {
+    private Socket pingsocket;
+    private PrintWriter mywriter;
+    private BufferedReader myreader;
+
+    Telnet() throws IOException {
+        pingsocket=new Socket("localhost", 55555);
+        mywriter=new PrintWriter(pingsocket.getOutputStream(), true);
+        myreader=new BufferedReader((new InputStreamReader(pingsocket.getInputStream())));
+    }
 
 
     public String sendWhere() throws IOException
     {
-        Socket pingsocket=null;
-        PrintWriter mywriter=null;
-        BufferedReader myreader=null;
-        try
-        {
-            pingsocket=new Socket("0.0.0.0", 5555);
-            mywriter=new PrintWriter(pingsocket.getOutputStream(), true);
-            myreader=new BufferedReader((new InputStreamReader(pingsocket.getInputStream())));
-
-
-        }
-        catch (IOException e)
-        {
-            e.printStackTrace();
-            return null;
-        }
         mywriter.println("where");
         StringBuilder response=new StringBuilder();
         String line;
-        while((line=myreader.readLine())!=null)
+        while(myreader.ready())
         {
+            line=myreader.readLine();
             response.append(line);
         }
         //get stuff from myreader .readline()
 
-        mywriter.close();
-        myreader.close();
-        pingsocket.close();
+
         return response.toString();
 
     }
 
     public String sendSpeed(int speed1, int speed2) throws IOException
     {
-        Socket pingsocket=null;
-        PrintWriter mywriter=null;
-        BufferedReader myreader=null;
-        try{
-            pingsocket=new Socket("0.0.0.0", 5555);
-            mywriter=new PrintWriter(pingsocket.getOutputStream(), true);
-            myreader=new BufferedReader((new InputStreamReader(pingsocket.getInputStream())));
 
-
-        }
-        catch (IOException e)
-        {
-            e.printStackTrace();
-            return null;
-        }
         mywriter.println("speed "+speed1+" "+speed2);
 
         StringBuilder response=new StringBuilder();
         String line;
-        while((line=myreader.readLine())!=null)
+        while(myreader.ready())
         {
+            line=myreader.readLine();
             response.append(line);
         }
         //get stuff from myreader .readline()
 
         mywriter.close();
         myreader.close();
-        pingsocket.close();
+
         return response.toString();
     }
 
     public boolean shutdown() throws IOException
     {
-        Socket pingsocket=null;
-        PrintWriter mywriter=null;
-        BufferedReader myreader=null;
-        try{
-            pingsocket=new Socket("0.0.0.0", 5555);
-            mywriter=new PrintWriter(pingsocket.getOutputStream(), true);
-            myreader=new BufferedReader((new InputStreamReader(pingsocket.getInputStream())));
 
-
-        }
-        catch (IOException e)
-        {
-            e.printStackTrace();
-            return false;
-        }
         mywriter.println("shutdown");
         mywriter.close();
         myreader.close();
