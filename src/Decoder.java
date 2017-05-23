@@ -38,7 +38,12 @@ public class Decoder
             JSONArray centerCoordinates = robot.getJSONArray("center");
             double x = centerCoordinates.getDouble(0);
             double y = centerCoordinates.getDouble(1);
-            // is this going to screw everything up? :(
+            JSONArray orientationCoordinates = robot.getJSONArray("orientation");
+            double a = orientationCoordinates.getDouble(0);
+            double b = orientationCoordinates.getDouble(1);
+
+            // rounding...
+            r.setOrientation(new Coordinate((int)a, (int)b));
             r.setCurrentCenterPosition(new Coordinate((int)x, (int)y));
             // do we need this? :o
             double elapsedTime = singMeASongOfJSON.getDouble("time");
@@ -71,7 +76,7 @@ public class Decoder
             for (int i = 0; i < obstacles.size(); i++)
             {
                   machineVision.generateObstacleMap(1000, 1000, obstacles.get(i),
-                          30);
+                          250);
                   // I think we need to adjust the spread based on how well the robot avoids the obstacles
             }
       }

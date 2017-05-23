@@ -107,6 +107,8 @@ public class MachineVision
         {
             // You broke it, son. You failed. why, oh why have you failed me?
             System.out.println("You suck.");
+            cur.setΔX(0);
+            cur.setΔY(0);
         }
     }
 
@@ -117,11 +119,11 @@ public class MachineVision
      *  This will probably need some parameters at some point as well.
      *  "allows the agent to scale the strength of this field" ?
      *
-     * Test value: 2.
+     * Test value: 1.
      */
     private double computeβ()
     {
-        return 2;
+        return 1;
     }
 
     /**
