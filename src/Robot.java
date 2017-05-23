@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+
 /**
  * Created by williamjones on 5/15/17.
  * Robot: Class designed to encapsulate our physical robot.

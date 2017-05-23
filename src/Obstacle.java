@@ -2,6 +2,17 @@
  * Created by Alex on 5/17/17.
  * Data package for an obstacle in the terrain map.
  * We might need one of these for a GOAL object, too.
+ *
+ * where to get the ARUCO libraries?
+ * install pyserial?
+ *
+ * coordinates are openCV image coordinates, tied to the size of the screen and has the
+ *  weird upper LH is 0,0 configuration
+ * Should be x, y.
+ *
+ * What do we do with the orientation variable?
+ *
+ * what physically represents a goal state?
  */
 public class Obstacle
 {
@@ -23,8 +34,10 @@ public class Obstacle
 
     /**
      * Radius of the obstacle
+     * Transient because we don't get it from the JSON
+     *  (thus helping effective GSON parsing)
      */
-    private double radius;
+    private transient double radius;
 
     /**
      * Default constructor for Obstacle

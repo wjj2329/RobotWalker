@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+
 /**
  * Created by Alex on 5/16/17.
  * Class to represent the vision of the robot.
@@ -16,6 +18,11 @@ public class MachineVision
      *  square, because we all know what assuming does
      */
     private Dimensions dimensions;
+
+    /**
+     * The obstacles
+     */
+    private ArrayList<Obstacle> obstacles;
 
     /**
      * Generates map for the goal
