@@ -1,3 +1,7 @@
+package Map;
+
+import Map.Coordinate;
+
 /**
  * Created by Alex on 5/17/17.
  * Data package for an obstacle in the terrain map.
@@ -44,7 +48,7 @@ public class Obstacle
     private transient double radius;
 
     /**
-     * Default constructor for Obstacle
+     * Default constructor for Map.Obstacle
      */
     public Obstacle(Coordinate center, Coordinate corner1, Coordinate corner2, Coordinate corner3,
                     Coordinate corner4, Coordinate orientation, double radius)

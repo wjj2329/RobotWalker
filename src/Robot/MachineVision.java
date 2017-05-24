@@ -1,3 +1,7 @@
+package Robot;
+
+import Map.*;
+
 import java.util.ArrayList;
 
 /**

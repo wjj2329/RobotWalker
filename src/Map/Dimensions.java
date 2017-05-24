@@ -1,3 +1,5 @@
+package Map;
+
 /**
  * Created by Alex on 5/17/17.
  * Used to represent dimensions of the grid.

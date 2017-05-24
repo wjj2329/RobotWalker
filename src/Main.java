@@ -1,3 +1,5 @@
+import Robot.Robot;
+
 import java.io.IOException;
 
 /**
@@ -9,14 +11,14 @@ public class Main
     public static void main(String argv[]) throws IOException, InterruptedException
     {
         Robot r = new Robot();
-        System.out.println("Hi. My name is Robot \uD83E\uDD16");
+        System.out.println("Hi. My name is Robot.Robot \uD83E\uDD16");
         Telnet connection=new Telnet();
 
         while(true)
         {
             String s=connection.sendWhere();
             System.out.println(s);
-            Decoder.setMyMapsFromJson(r, s);
+            Robot.Decoder.setMyMapsFromJson(r, s);
 
            Thread.sleep(3000);
            double directions[] = r.calculateSpeeds();

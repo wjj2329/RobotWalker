@@ -1,3 +1,5 @@
+package Map;
+
 /**
  * Created by williamjones on 5/15/17.
  * Represents a coordinate position on the terrain map.

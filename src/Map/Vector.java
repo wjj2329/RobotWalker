@@ -1,3 +1,8 @@
+package Map;
+
+import Map.Coordinate;
+import Map.Degree;
+
 /**
  * Created by williamjones on 5/15/17.
  * Class designed to represent an arrow with varying strength.
@@ -27,7 +32,7 @@ public class Vector {
     private Degree angle;
 
     /**
-     * Public constructor for Vector
+     * Public constructor for Map.Vector
      */
     public Vector(Coordinate location, double length, Degree angle)
     {
@@ -37,7 +42,7 @@ public class Vector {
     }
 
     /**
-     * Polymorphic constructor for Vector.
+     * Polymorphic constructor for Map.Vector.
      *  The thing is, we may not know what
      *  the angle or ΔX are when we first
      *  start out, and we might have to compute them later.
