@@ -32,6 +32,10 @@ public class Decoder
        */
       public static void setMyMapsFromJson(Robot r, String json)
       {
+            if (machineVision == null)
+            {
+                  machineVision = new MachineVision();
+            }
             // TerrainMap  CREATE THE THREE MAPS FOR THE ROBOT
             // Robot orientation, corners, center, and time; obstacle locations, corners, and center
             JSONObject singMeASongOfJSON = new JSONObject(json);
@@ -68,6 +72,9 @@ public class Decoder
             }
             machineVision.setObstacles(allMyObstacles);
             processObstacles(allMyObstacles, r);
+            machineVision.generateRandomFieldMap();
+            // This will only work if we've set this variables for the robot.
+            machineVision.generateCombinedMap(r.getGoalMap(), r.getObstacleMap(), r.getRandomField());
       }
 
       /**
