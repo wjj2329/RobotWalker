@@ -106,6 +106,9 @@ public class Decoder
 
       }
 
+      /**
+       * Combines all the obstacle maps into one.
+       */
       private static TerrainMap combineObstacleMaps(ArrayList<TerrainMap> obstacleMaps)
       {
             Vector[][] combinedObstacleMap = new Vector[1000][1000];
