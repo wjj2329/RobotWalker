@@ -40,7 +40,7 @@ public class Telnet
 
     }
 
-    public String sendSpeed(int speed1, int speed2) throws IOException
+    public String sendSpeed(double speed1, double speed2) throws IOException
     {
 
         mywriter.println("speed "+speed1+" "+speed2);

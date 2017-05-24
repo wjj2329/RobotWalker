@@ -52,9 +52,15 @@ public class Robot
 
     }
 
-    public int[] calculateSpeeds()
+    /**
+     * Needs to return deltaX and deltaY
+     */
+    public double[] calculateSpeeds()
     {
-        return null;
+        double[] arr = new double[2];
+        arr[0] = combinedMap.getMyMap()[currentCenterPosition.getX()][currentCenterPosition.getY()].getΔX();
+        arr[1] = combinedMap.getMyMap()[currentCenterPosition.getX()][currentCenterPosition.getY()].getΔY();
+        return arr;
     }
 
     //<editor-fold desc="Collapsed getters and setters">
