@@ -24,12 +24,12 @@ public class Vector {
     /**
      * Angle: represents the direction.
      */
-    private double angle;
+    private Degree angle;
 
     /**
      * Public constructor for Vector
      */
-    public Vector(Coordinate location, double length, double angle)
+    public Vector(Coordinate location, double length, Degree angle)
     {
         this.location = location;
         this.ΔX = length;
@@ -61,7 +61,7 @@ public class Vector {
         return ΔX;
     }
 
-    public double getAngle()
+    public Degree getAngle()
     {
         return angle;
     }
@@ -71,7 +71,7 @@ public class Vector {
         this.ΔX = ΔX;
     }
 
-    public void setAngle(double angle)
+    public void setAngle(Degree angle)
     {
         this.angle = angle;
     }
@@ -99,7 +99,7 @@ public class Vector {
         s.append(" ");
         s.append(location.getY());
         s.append("Angle of ");
-        s.append(angle);
+        s.append(angle.degree);
         return s.toString();
     }
 }

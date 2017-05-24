@@ -40,8 +40,8 @@ public class MachineVision
                 goalGrid[i][j] = new Vector(new Coordinate(i, j));
                 Vector cur = goalGrid[i][j];
                 double distanceFromGoalToVector = PhysUtils.distance(cur.getLocation(), goal.getCenter());
-                cur.setAngle(PhysUtils.obstacleAngle(goal.getCenter(), cur.getLocation()));
-                double θ = cur.getAngle();
+                cur.setAngle(new Degree(PhysUtils.obstacleAngle(goal.getCenter(), cur.getLocation())));
+                Degree θ = cur.getAngle();
                 setΔXAndΔYAcceptField(θ, distanceFromGoalToVector, spreadOfField, goalRadius, computeα(), cur);
             }
         }
@@ -53,7 +53,7 @@ public class MachineVision
      * Helps the robot know how to move.
      * (╯°□°)╯
      */
-    private void setΔXAndΔYAcceptField(double θ, double distanceFromGoalToVector, double spread,
+    private void setΔXAndΔYAcceptField(Degree θ, double distanceFromGoalToVector, double spread,
                                        double goalRadius, double α, Vector cur)
     {
         // If we're inside of the goal, don't move any longer.
@@ -66,22 +66,22 @@ public class MachineVision
         else if (goalRadius <= distanceFromGoalToVector && distanceFromGoalToVector <= spread + goalRadius)
         {
             // ∆x=α(d−r)cos(θ) and ∆y=α(d−r)sin(θ)
-            cur.setΔX(α * (distanceFromGoalToVector - goalRadius) * Math.cos(θ));
-            cur.setΔY(α * (distanceFromGoalToVector - goalRadius) * Math.sin(θ));
+            cur.setΔX(α * (distanceFromGoalToVector - goalRadius) * Math.cos(θ.degree));
+            cur.setΔY(α * (distanceFromGoalToVector - goalRadius) * Math.sin(θ.degree));
         }
         // If we're outside the goal altogether, make a very strong potential field of influence.
         else if (distanceFromGoalToVector > spread + goalRadius)
         {
             //if d > s + r, then ∆x = αs cos(θ) and ∆y = αs sin(θ)
-            cur.setΔX(α * spread * Math.cos(θ));
-            cur.setΔY(α * spread * Math.sin(θ));
+            cur.setΔX(α * spread * Math.cos(θ.degree));
+            cur.setΔY(α * spread * Math.sin(θ.degree));
         }
         // you failed
         else
         {
             System.out.println("it broke -__- ");
-            cur.setΔX(α * spread * Math.cos(θ));
-            cur.setΔY(α * spread * Math.sin(θ));
+            cur.setΔX(α * spread * Math.cos(θ.degree));
+            cur.setΔY(α * spread * Math.sin(θ.degree));
         }
     }
 
@@ -132,8 +132,8 @@ public class MachineVision
                 // vector that we're currently analyzing. So it will in effect be the same thing.
 
                 double distanceFromObstacleToVector = PhysUtils.distance(cur.getLocation(), obstacle.getCenter());
-                cur.setAngle(PhysUtils.obstacleAngle(obstacle.getCenter(), cur.getLocation()));
-                double θ = cur.getAngle();
+                cur.setAngle(new Degree(PhysUtils.obstacleAngle(obstacle.getCenter(), cur.getLocation())));
+                Degree θ = cur.getAngle();
                 setΔXAndΔYRejectField(θ, distanceFromObstacleToVector, spreadOfField, obstacleRadius, computeβ(), cur);
             }
         }
@@ -145,21 +145,21 @@ public class MachineVision
      * Sets ΔX and ΔY, so the robot knows how to move.
      * Beta = scalar for the strength of this field
      */
-    private void setΔXAndΔYRejectField(double θ, double distanceFromObstacleToVector, double spreadOfField,
+    private void setΔXAndΔYRejectField(Degree θ, double distanceFromObstacleToVector, double spreadOfField,
                                        double obstacleRadius, double β, Vector cur)
     {
         // This means we're inside of the obstacle. BAD! Get out ASAP!
         if (distanceFromObstacleToVector < obstacleRadius)
         {
-            cur.setΔX(-PhysUtils.sign(Math.cos(θ)) * Double.MAX_VALUE);
-            cur.setΔY(-PhysUtils.sign(Math.sin(θ)) * Double.MAX_VALUE);
+            cur.setΔX(-PhysUtils.sign(Math.cos(θ.degree)) * Double.MAX_VALUE);
+            cur.setΔY(-PhysUtils.sign(Math.sin(θ.degree)) * Double.MAX_VALUE);
         }
         // This means we're approaching the obstacle. The degree of repulsion is computed here.
         else if (obstacleRadius <= distanceFromObstacleToVector && distanceFromObstacleToVector <= spreadOfField
                 + obstacleRadius)
         {
-            cur.setΔX(-β*(spreadOfField + distanceFromObstacleToVector - obstacleRadius) * Math.cos(θ));
-            cur.setΔY(-β*(spreadOfField + distanceFromObstacleToVector - obstacleRadius) * Math.sin(θ));
+            cur.setΔX(-β*(spreadOfField + distanceFromObstacleToVector - obstacleRadius) * Math.cos(θ.degree));
+            cur.setΔY(-β*(spreadOfField + distanceFromObstacleToVector - obstacleRadius) * Math.sin(θ.degree));
         }
         // Outside of the sphere of influence = do nothing.
         else if (distanceFromObstacleToVector > spreadOfField + obstacleRadius)
@@ -204,8 +204,17 @@ public class MachineVision
      */
     public TerrainMap generateCombinedMap(TerrainMap goalMap, TerrainMap obstacleMap, TerrainMap randomMap)
     {
-        // insert ingenious code to combine the three maps here son
-        return new TerrainMap(new Vector[1][]);
+        for(int i=0; i<goalMap.getMyMap().length; i++)
+        {
+            for(int j=0; j<goalMap.getMyMap().length; j++)
+            {
+                goalMap.getMyMap()[i][j].getAngle().Add(obstacleMap.getMyMap()[i][j].getAngle());
+                goalMap.getMyMap()[i][j].getAngle().Add(randomMap.getMyMap()[i][j].getAngle());  //adds the two together includes mod
+                goalMap.getMyMap()[i][j].setΔX(goalMap.getMyMap()[i][j].getΔX()+obstacleMap.getMyMap()[i][j].getΔX()+randomMap.getMyMap()[i][j].getΔX());
+                goalMap.getMyMap()[i][j].setΔY(goalMap.getMyMap()[i][j].getΔY()+obstacleMap.getMyMap()[i][j].getΔY()+randomMap.getMyMap()[i][j].getΔY());
+            }
+        }
+        return goalMap;
     }
 
     public ArrayList<Obstacle> getObstacles()
