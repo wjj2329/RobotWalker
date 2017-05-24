@@ -108,6 +108,7 @@ public class MachineVision
      *  s + r = circle of influence; s = degree of potency that we want the field to have
      *
      *  spreadOfField = potency of field; this may need to be computed via a formula
+     *  Orientation of an obstacle is NOT RELEVANT. Only the robot.
      */
     public TerrainMap generateObstacleMap(int rowDim, int colDim, Obstacle obstacle, double spreadOfField)
     {

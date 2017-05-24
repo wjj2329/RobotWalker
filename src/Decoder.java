@@ -89,6 +89,7 @@ public class Decoder
                   Obstacle cur = obstacles.get(i);
                   if (cur.getId() != choice)
                   {
+                        // Okay, this might be a problem: I generate a SEPARATE obstacle map for each one.
                         machineVision.generateObstacleMap(1000, 1000, cur, 250);
                   }
                   else
