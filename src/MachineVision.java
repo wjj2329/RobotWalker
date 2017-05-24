@@ -37,6 +37,7 @@ public class MachineVision
         {
             for (int j = 0; j < goalGrid[i].length; j++)
             {
+                goalGrid[i][j] = new Vector(new Coordinate(i, j));
                 Vector cur = goalGrid[i][j];
                 double distanceFromGoalToVector = PhysUtils.distance(cur.getLocation(), goal.getCenter());
                 cur.setAngle(PhysUtils.obstacleAngle(goal.getCenter(), cur.getLocation()));
@@ -122,6 +123,7 @@ public class MachineVision
         {
             for (int j = 0; j < obstacleGrid[i].length; j++)
             {
+                obstacleGrid[i][j] = new Vector(new Coordinate(i, j));
                 // ...set its deltaX and deltaY.
                 Vector cur = obstacleGrid[i][j];
                 // According to the book, this could very well be the distance from the obstacle to the AGENT.

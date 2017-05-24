@@ -67,16 +67,17 @@ public class Decoder
                   allMyObstacles.add(newObstacle);
             }
             machineVision.setObstacles(allMyObstacles);
-            processObstacles(allMyObstacles);
+            processObstacles(allMyObstacles, r);
       }
 
       /**
        * Takes care of the obstacles
        * @param obstacles the obstacles
        */
-      private static void processObstacles(ArrayList<Obstacle> obstacles)
+      private static void processObstacles(ArrayList<Obstacle> obstacles, Robot r)
       {
             System.out.println("Please select a GOAL among the following options:");
+            ArrayList<TerrainMap> obstacleMaps = new ArrayList<>();
             for (int j = 0; j < obstacles.size(); j++)
             {
                   System.out.println(obstacles.get(j).getId() + " ");
@@ -90,7 +91,8 @@ public class Decoder
                   if (cur.getId() != choice)
                   {
                         // Okay, this might be a problem: I generate a SEPARATE obstacle map for each one.
-                        machineVision.generateObstacleMap(1000, 1000, cur, 250);
+                        obstacleMaps.add(machineVision.generateObstacleMap(1000, 1000, cur,
+                                250));
                   }
                   else
                   {
@@ -99,5 +101,31 @@ public class Decoder
                   }
                   // I think we need to adjust the spread based on how well the robot avoids the obstacles
             }
+            TerrainMap sol = combineObstacleMaps(obstacleMaps);
+            r.setObstacleMap(sol);
+
+      }
+
+      private static TerrainMap combineObstacleMaps(ArrayList<TerrainMap> obstacleMaps)
+      {
+            Vector[][] combinedObstacleMap = new Vector[1000][1000];
+            for (int i = 0; i < obstacleMaps.size(); i++)
+            {
+                  TerrainMap cur = obstacleMaps.get(i);
+                  Vector[][] curMap = cur.getMyMap();
+                  for (int j = 0; j < curMap.length; j++)
+                  {
+                        for (int k = 0; k < curMap[j].length; j++)
+                        {
+                              // Add the vectors
+                              //combinedObstacleMap[j][k] += curMap[j][k];
+                              combinedObstacleMap[j][k] = new Vector(new Coordinate(j, k));
+                              Vector here = combinedObstacleMap[j][k];
+                              here.setΔX(here.getΔX() + curMap[j][k].getΔX());
+                              here.setΔY(here.getΔY() + curMap[j][k].getΔY());
+                        }
+                  }
+            }
+            return new TerrainMap(combinedObstacleMap);
       }
 }
