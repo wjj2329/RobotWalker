@@ -1,11 +1,11 @@
-package Robot;
+package RobotFunctions;
 
 import Map.Coordinate;
 import Map.TerrainMap;
 
 /**
  * Created by williamjones on 5/15/17.
- * Robot.Robot: Class designed to encapsulate our physical robot.
+ * RobotFunctions.RobotFunctions: Class designed to encapsulate our physical robot.
  * 🤖
  */
 public class Robot
@@ -50,7 +50,7 @@ public class Robot
     private Coordinate corner4;
 
     /**
-     * Public default constructor for Robot.Robot.
+     * Public default constructor for RobotFunctions.RobotFunctions.
      */
     public Robot()
     {

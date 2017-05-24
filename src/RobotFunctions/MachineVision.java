@@ -1,4 +1,4 @@
-package Robot;
+package RobotFunctions;
 
 import Map.*;
 

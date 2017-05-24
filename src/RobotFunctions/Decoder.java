@@ -1,4 +1,4 @@
-package Robot;
+package RobotFunctions;
 
 import Map.*;
 import com.google.gson.Gson;
@@ -40,7 +40,7 @@ public class Decoder
                   machineVision = new MachineVision();
             }
             // Map.TerrainMap  CREATE THE THREE MAPS FOR THE ROBOT
-            // Robot.Robot orientation, corners, center, and time; obstacle locations, corners, and center
+            // RobotFunctions.RobotFunctions orientation, corners, center, and time; obstacle locations, corners, and center
             JSONObject singMeASongOfJSON = new JSONObject(json);
             JSONObject robot = singMeASongOfJSON.getJSONObject("robot");
             JSONArray centerCoordinates = robot.getJSONArray("center");
