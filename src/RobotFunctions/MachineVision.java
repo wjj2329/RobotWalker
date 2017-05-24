@@ -3,6 +3,7 @@ package RobotFunctions;
 import Map.*;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 /**
  * Created by Alex on 5/16/17.
@@ -199,7 +200,21 @@ public class MachineVision
      */
     public TerrainMap generateRandomFieldMap()
     {
-        return new TerrainMap(new Vector[1][]);
+        TerrainMap newmap=new TerrainMap(new Vector[1000][1000]);
+        Random myrandom=new Random();
+        for (int i=0; i<newmap.getMyMap().length; i++)
+        {
+            for(int j=0; j<newmap.getMyMap().length; j++)
+            {
+                newmap.getMyMap()[i][j]=new Vector(new Coordinate(i, j));
+                newmap.getMyMap()[i][j].setAngle(new Degree(myrandom.nextInt(359)));
+                newmap.getMyMap()[i][j].setΔX(myrandom.nextInt(6)-3);
+                newmap.getMyMap()[i][j].setΔY(myrandom.nextInt(6)-3);//this is experimental I have no idea what it should actually be
+            }
+        }
+
+
+        return newmap;
     }
 
     /**

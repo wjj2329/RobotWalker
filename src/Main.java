@@ -20,10 +20,12 @@ public class Main
         while(true)
         {
             String s=connection.sendWhere();
+            if(s.equals("None"))
+            {
+                continue;
+            }
             System.out.println(s);
             Decoder.setMyMapsFromJson(r, s);
-
-           Thread.sleep(3000);
            double directions[] = r.calculateSpeeds();
            String speedResult = connection.sendSpeed(directions[0], directions[1]);
            if(directions[0] == 0 && directions[1] == 0)
