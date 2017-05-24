@@ -85,4 +85,21 @@ public class Vector {
     {
         this.ΔY = ΔY;
     }
+
+    @Override
+    public String toString() {
+        StringBuilder s=new StringBuilder();;
+        s.append("Delta ");
+        s.append(ΔX);
+        s.append(" Delta ");
+        s.append(ΔY);
+        s.append(" ");
+        s.append("Location Coordiante ");
+        s.append(location.getX());
+        s.append(" ");
+        s.append(location.getY());
+        s.append("Angle of ");
+        s.append(angle);
+        return s.toString();
+    }
 }
