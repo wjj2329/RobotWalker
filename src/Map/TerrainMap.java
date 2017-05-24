@@ -28,4 +28,17 @@ public class TerrainMap
     {
         this.dimensions = dimensions;
     }
+
+    @Override
+    public String toString() {
+        StringBuilder ss=new StringBuilder();
+        for (int i=0; i<myMap.length; i++)
+        {
+            for (int j=0; j<myMap.length; j++)
+            {
+                ss.append(myMap[i][j].toString());
+            }
+        }
+       return ss.toString();
+    }
 }

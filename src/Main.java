@@ -27,6 +27,7 @@ public class Main
             System.out.println(s);
             Decoder.setMyMapsFromJson(r, s);
            double directions[] = r.calculateSpeeds();
+           System.out.println("I say go here "+directions[0]+" "+directions[1]);
            String speedResult = connection.sendSpeed(directions[0], directions[1]);
            if(directions[0] == 0 && directions[1] == 0)
            {
