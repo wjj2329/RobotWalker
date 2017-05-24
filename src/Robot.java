@@ -19,7 +19,12 @@ public class Robot
      * Random field is necessary to move the robot out of
      *  spots where it can freeze.
      */
-    private TerrainMap randomField;
+    private TerrainMap randomMap;
+
+    /**
+     * The combined map
+     */
+    private TerrainMap combinedMap;
 
     /**
      * Where the robot currently is in our map
@@ -76,14 +81,14 @@ public class Robot
         this.obstacleMap = obstacleMap;
     }
 
-    public TerrainMap getRandomField()
+    public TerrainMap getRandomMap()
     {
-        return randomField;
+        return randomMap;
     }
 
-    public void setRandomField(TerrainMap randomField)
+    public void setRandomMap(TerrainMap randomMap)
     {
-        this.randomField = randomField;
+        this.randomMap = randomMap;
     }
 
     public Coordinate getCurrentCenterPosition()
@@ -145,5 +150,16 @@ public class Robot
     {
         this.corner4 = corner4;
     }
+
+    public TerrainMap getCombinedMap()
+    {
+        return combinedMap;
+    }
+
+    public void setCombinedMap(TerrainMap combinedMap)
+    {
+        this.combinedMap = combinedMap;
+    }
+
     //</editor-fold>
 }

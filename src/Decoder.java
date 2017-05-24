@@ -72,9 +72,10 @@ public class Decoder
             }
             machineVision.setObstacles(allMyObstacles);
             processObstacles(allMyObstacles, r);
-            r.setRandomField(machineVision.generateRandomFieldMap());
+            r.setRandomMap(machineVision.generateRandomFieldMap());
             // This will only work if we've set this variables for the robot.
-            machineVision.generateCombinedMap(r.getGoalMap(), r.getObstacleMap(), r.getRandomField());
+            r.setCombinedMap(machineVision.generateCombinedMap(r.getGoalMap(), r.getObstacleMap(),
+                    r.getRandomMap()));
       }
 
       /**
