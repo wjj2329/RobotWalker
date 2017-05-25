@@ -34,8 +34,7 @@ public class MachineVision
      */
     public TerrainMap generateGoalMap(int rowDim, int colDim, Goal goal, double spreadOfField)
     {
-        dimensions.setRow(rowDim);
-        dimensions.setColumn(colDim);
+        dimensions = new Dimensions(rowDim, colDim);
         double goalRadius = goal.getRadius();
         Vector[][] goalGrid = new Vector[dimensions.getRow()][dimensions.getColumn()];
         for (int i = 0; i < goalGrid.length; i++)
@@ -44,8 +43,8 @@ public class MachineVision
             {
                 goalGrid[i][j] = new Vector(new Coordinate(i, j));
                 Vector cur = goalGrid[i][j];
-                double distanceFromGoalToVector = PhysUtils.distance(cur.getLocation(), goal.getCenter());
-                cur.setAngle(new Degree(PhysUtils.obstacleAngle(goal.getCenter(), cur.getLocation())));
+                double distanceFromGoalToVector = PhysUtils.distance(new Coordinate(i, j), goal.getCenter());
+                cur.setAngle(new Degree(PhysUtils.obstacleAngle(goal.getCenter(), new Coordinate(i, j))));
                 Degree θ = cur.getAngle();
                 setΔXAndΔYAcceptField(θ, distanceFromGoalToVector, spreadOfField, goalRadius, computeα(), cur);
             }
@@ -66,6 +65,7 @@ public class MachineVision
         {
             cur.setΔX(0);
             cur.setΔY(0);
+            cur.setGoalProximity(Vector.PROXIMITY_TO_OBJECT.CENTER);
         }
         // If we're close to the field, make a strong potential field.
         else if (goalRadius <= distanceFromGoalToVector && distanceFromGoalToVector <= spread + goalRadius)
@@ -73,6 +73,7 @@ public class MachineVision
             // ∆x=α(d−r)cos(θ) and ∆y=α(d−r)sin(θ)
             cur.setΔX(α * (distanceFromGoalToVector - goalRadius) * Math.cos(θ.degree));
             cur.setΔY(α * (distanceFromGoalToVector - goalRadius) * Math.sin(θ.degree));
+            cur.setGoalProximity(Vector.PROXIMITY_TO_OBJECT.APPROACHING);
         }
         // If we're outside the goal altogether, make a very strong potential field of influence.
         else if (distanceFromGoalToVector > spread + goalRadius)
@@ -80,6 +81,7 @@ public class MachineVision
             //if d > s + r, then ∆x = αs cos(θ) and ∆y = αs sin(θ)
             cur.setΔX(α * spread * Math.cos(θ.degree));
             cur.setΔY(α * spread * Math.sin(θ.degree));
+            cur.setGoalProximity(Vector.PROXIMITY_TO_OBJECT.AWAY);
         }
         // you failed
         else
@@ -136,13 +138,15 @@ public class MachineVision
                 // Because the agent will only be using the method if it's at the cell containing the
                 // vector that we're currently analyzing. So it will in effect be the same thing.
 
-                double distanceFromObstacleToVector = PhysUtils.distance(cur.getLocation(), obstacle.getCenter());
-                cur.setAngle(new Degree(PhysUtils.obstacleAngle(obstacle.getCenter(), cur.getLocation())));
+                double distanceFromObstacleToVector = PhysUtils.distance(new Coordinate(i, j), obstacle.getCenter());
+                cur.setAngle(new Degree(PhysUtils.obstacleAngle(obstacle.getCenter(), new Coordinate(i, j))));
                 Degree θ = cur.getAngle();
                 setΔXAndΔYRejectField(θ, distanceFromObstacleToVector, spreadOfField, obstacleRadius, computeβ(), cur);
+                obstacleGrid[i][j] = cur;
             }
         }
         // generate the new coordinate here, based on previous coordinate.x + deltaX, prev.y + deltaY
+
         return new TerrainMap(obstacleGrid);
     }
 
@@ -150,27 +154,36 @@ public class MachineVision
      * Sets ΔX and ΔY, so the robot knows how to move.
      * Beta = scalar for the strength of this field
      */
+    private double smallest = Double.MAX_VALUE;
     private void setΔXAndΔYRejectField(Degree θ, double distanceFromObstacleToVector, double spreadOfField,
                                        double obstacleRadius, double β, Vector cur)
     {
+        //System.out.println("POOOOOOOO");
         // This means we're inside of the obstacle. BAD! Get out ASAP!
         if (distanceFromObstacleToVector < obstacleRadius)
         {
+            //System.out.println("First if");
             cur.setΔX(-PhysUtils.sign(Math.cos(θ.degree)) * Double.MAX_VALUE);
             cur.setΔY(-PhysUtils.sign(Math.sin(θ.degree)) * Double.MAX_VALUE);
+            cur.setObstacleProximity(Vector.PROXIMITY_TO_OBJECT.CENTER);
+            //System.out.println("Is this set correctly? " + cur.getObstacleProximity().toString());
         }
         // This means we're approaching the obstacle. The degree of repulsion is computed here.
         else if (obstacleRadius <= distanceFromObstacleToVector && distanceFromObstacleToVector <= spreadOfField
                 + obstacleRadius)
         {
+            //System.out.println("second if");
             cur.setΔX(-β*(spreadOfField + distanceFromObstacleToVector - obstacleRadius) * Math.cos(θ.degree));
             cur.setΔY(-β*(spreadOfField + distanceFromObstacleToVector - obstacleRadius) * Math.sin(θ.degree));
+            cur.setObstacleProximity(Vector.PROXIMITY_TO_OBJECT.APPROACHING);
         }
         // Outside of the sphere of influence = do nothing.
         else if (distanceFromObstacleToVector > spreadOfField + obstacleRadius)
         {
+            //System.out.println("third if");
             cur.setΔX(0);
             cur.setΔY(0);
+            cur.setObstacleProximity(Vector.PROXIMITY_TO_OBJECT.AWAY);
         }
         else
         {
@@ -179,6 +192,7 @@ public class MachineVision
             cur.setΔX(0);
             cur.setΔY(0);
         }
+        //System.out.println("weedle");
     }
 
     /**
@@ -223,17 +237,47 @@ public class MachineVision
      */
     public TerrainMap generateCombinedMap(TerrainMap goalMap, TerrainMap obstacleMap, TerrainMap randomMap)
     {
-        for(int i=0; i<goalMap.getMyMap().length; i++)
+        if (obstacleMap.getMyMap() == null || obstacleMap.getMyMap()[0][0] == null)
         {
-            for(int j=0; j<goalMap.getMyMap().length; j++)
+            obstacleMap.setMyMap(new Vector[1000][1000]);
+            for (int k = 0; k < obstacleMap.getMyMap().length; k++)
             {
-                goalMap.getMyMap()[i][j].getAngle().Add(obstacleMap.getMyMap()[i][j].getAngle());
-                goalMap.getMyMap()[i][j].getAngle().Add(randomMap.getMyMap()[i][j].getAngle());  //adds the two together includes mod
-                goalMap.getMyMap()[i][j].setΔX(goalMap.getMyMap()[i][j].getΔX()+obstacleMap.getMyMap()[i][j].getΔX()+randomMap.getMyMap()[i][j].getΔX());
-                goalMap.getMyMap()[i][j].setΔY(goalMap.getMyMap()[i][j].getΔY()+obstacleMap.getMyMap()[i][j].getΔY()+randomMap.getMyMap()[i][j].getΔY());
+                for (int l = 0; l < obstacleMap.getMyMap()[k].length; l++)
+                {
+                    Vector myNew = new Vector(new Coordinate(0, 0));
+                    myNew.setΔX(0);
+                    myNew.setΔY(0);
+                    obstacleMap.getMyMap()[k][l] = myNew;
+                    //System.out.println("My new's delta x is " + myNew.getΔX());
+                }
             }
         }
-        return goalMap;
+        TerrainMap toReturn = new TerrainMap(new Vector[1000][1000]);
+        toReturn.fillWithZeroes();
+        for(int i=0; i<goalMap.getMyMap().length; i++)
+        {
+            for(int j=0; j<goalMap.getMyMap()[i].length; j++)
+            {
+                //goalMap.getMyMap()[i][j].getAngle().Add(obstacleMap.getMyMap()[i][j].getAngle());
+                //goalMap.getMyMap()[i][j].getAngle().Add(randomMap.getMyMap()[i][j].getAngle());  //adds the two together includes mod
+//                if (i < 50 && j < 50)
+//                {
+//                    System.out.println("Old x: " + goalMap.getMyMap()[i][j].getΔX());
+//                    System.out.println("New x: " + (goalMap.getMyMap()[i][j].getΔX()+
+//                            obstacleMap.getMyMap()[i][j].getΔX()
+//                            +randomMap.getMyMap()[i][j].getΔX()));
+//                    System.out.println("Old y: " + goalMap.getMyMap()[i][j].getΔY());
+//                    System.out.println("New y: " + (goalMap.getMyMap()[i][j].getΔY()+
+//                            obstacleMap.getMyMap()[i][j].getΔY()
+//                            +randomMap.getMyMap()[i][j].getΔY()));
+//                }
+                toReturn.getMyMap()[i][j].setΔX(goalMap.getMyMap()[i][j].getΔX()+obstacleMap.getMyMap()[i][j].getΔX()
+                        +randomMap.getMyMap()[i][j].getΔX());
+                toReturn.getMyMap()[i][j].setΔY(goalMap.getMyMap()[i][j].getΔY()+obstacleMap.getMyMap()[i][j].getΔY()
+                        +randomMap.getMyMap()[i][j].getΔY());
+            }
+        }
+        return toReturn;
     }
 
     public ArrayList<Obstacle> getObstacles()
@@ -245,4 +289,5 @@ public class MachineVision
     {
         this.obstacles = obstacles;
     }
+
 }

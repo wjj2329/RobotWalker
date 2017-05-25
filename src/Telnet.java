@@ -17,25 +17,33 @@ public class Telnet
     private BufferedReader myreader;
 
     Telnet() throws IOException {
-        pingsocket=new Socket("localhost", 55555);
-        mywriter=new PrintWriter(pingsocket.getOutputStream(), true);
-        myreader=new BufferedReader((new InputStreamReader(pingsocket.getInputStream())));
+//        pingsocket=new Socket("localhost", 55555);
+//        mywriter=new PrintWriter(pingsocket.getOutputStream(), true);
+//        myreader=new BufferedReader((new InputStreamReader(pingsocket.getInputStream())));
     }
 
 
     public String sendWhere() throws IOException
     {
+        pingsocket=new Socket("localhost", 55555);
+        mywriter=new PrintWriter(pingsocket.getOutputStream(), true);
+        myreader=new BufferedReader((new InputStreamReader(pingsocket.getInputStream())));
         mywriter.println("where");
         StringBuilder response=new StringBuilder();
         String line;
         while(myreader.ready())
         {
             line=myreader.readLine();
-            response.append(line);
+            if (!line.equals("MSE430 Server (CS 470 BYU)"))
+            {
+                response.append(line);
+            }
         }
         //get stuff from myreader .readline()
 
-
+        mywriter.close();
+        myreader.close();
+        pingsocket.close();
         return response.toString();
 
     }
@@ -43,6 +51,9 @@ public class Telnet
     public String sendSpeed(double speed1, double speed2) throws IOException
     {
 
+        pingsocket=new Socket("localhost", 55555);
+        mywriter=new PrintWriter(pingsocket.getOutputStream(), true);
+        myreader=new BufferedReader((new InputStreamReader(pingsocket.getInputStream())));
         mywriter.println("speed "+speed1+" "+speed2);
 
         StringBuilder response=new StringBuilder();
@@ -54,6 +65,7 @@ public class Telnet
         }
         //get stuff from myreader .readline()
 
+        pingsocket.close();
         mywriter.close();
         myreader.close();
 
@@ -62,6 +74,9 @@ public class Telnet
 
     public boolean shutdown() throws IOException
     {
+        pingsocket=new Socket("localhost", 55555);
+        mywriter=new PrintWriter(pingsocket.getOutputStream(), true);
+        myreader=new BufferedReader((new InputStreamReader(pingsocket.getInputStream())));
 
         mywriter.println("shutdown");
         mywriter.close();
@@ -69,4 +84,5 @@ public class Telnet
         pingsocket.close();
         return true;
     }
+
 }

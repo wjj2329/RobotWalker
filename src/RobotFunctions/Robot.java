@@ -65,6 +65,15 @@ public class Robot
         double[] arr = new double[2];
         arr[0] = combinedMap.getMyMap()[currentCenterPosition.getX()][currentCenterPosition.getY()].getΔX();
         arr[1] = combinedMap.getMyMap()[currentCenterPosition.getX()][currentCenterPosition.getY()].getΔY();
+        // Just adjusting for the robot, so it doesn't physically crash!
+        if (arr[0] > 5)
+        {
+            arr[0] = 5;
+        }
+        if (arr[1] > 5)
+        {
+            arr[1] = 5;
+        }
         return arr;
     }
 
@@ -173,4 +182,5 @@ public class Robot
     }
 
     //</editor-fold>
+
 }

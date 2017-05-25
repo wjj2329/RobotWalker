@@ -21,6 +21,11 @@ public class Decoder
       private static MachineVision machineVision;
 
       /**
+       * So we don't recompute!
+       */
+      public static boolean firstTime = true;
+
+      /**
        * Default constructor
        */
       public Decoder()
@@ -39,7 +44,9 @@ public class Decoder
             {
                   machineVision = new MachineVision();
             }
+            // System.out.println("Meet my neighbor, SpongeBob. HI");
             // Map.TerrainMap  CREATE THE THREE MAPS FOR THE ROBOT
+            //System.out.println("This is it " + json);
             // RobotFunctions.RobotFunctions orientation, corners, center, and time; obstacle locations, corners, and center
             JSONObject singMeASongOfJSON = new JSONObject(json);
             JSONObject robot = singMeASongOfJSON.getJSONObject("robot");
@@ -56,29 +63,65 @@ public class Decoder
             // do we need this? :o
             double elapsedTime = singMeASongOfJSON.getDouble("time");
 
-            // Please bear in mind that one obstacle will actually become our goal!
-            ArrayList<Obstacle> allMyObstacles = new ArrayList<>();
-
-            final Iterator<String> keys = singMeASongOfJSON.keys();
-            Gson yourMomUsesGson = new Gson();
-            // This does get rid of the robot and time objects right??
-            while (keys.hasNext())
+            // Obstacle computation. We can do this later, technically.
+            if (firstTime) // What if I comment this out?
             {
-                  final String key = keys.next();
-                  Obstacle newObstacle = yourMomUsesGson.fromJson(singMeASongOfJSON.get(key).toString(),
-                          Obstacle.class);
-                  // It's a square, so let's make the radius just from center to one corner
-                  newObstacle.setRadius(PhysUtils.distance(newObstacle.getCenter(), newObstacle.getCorner1()));
-                  // Ok, so the number of the obstacle should be the key right?
-                  newObstacle.setId(Integer.parseInt(key));
-                  allMyObstacles.add(newObstacle);
+                  //System.out.println("I should see this twice ONLY if I'm testing Junit.");
+                  // Please bear in mind that one obstacle will actually become our goal!
+                  ArrayList<Obstacle> allMyObstacles = new ArrayList<>();
+
+                  final Iterator<String> keys = singMeASongOfJSON.keys();
+                  Gson yourMomUsesGson = new Gson();
+                  while (keys.hasNext())
+                  {
+                        final String key = keys.next();
+                        if (!key.equals("robot") && !key.equals("time"))
+                        {
+                              // this broke eh
+                              JSONObject jason = (JSONObject) singMeASongOfJSON.get(key);
+                              JSONArray orientation = jason.getJSONArray("orientation");
+                              double xCoord = orientation.getDouble(0);
+                              double yCoord = orientation.getDouble(1);
+                              Coordinate res = new Coordinate((int) xCoord, (int) yCoord);
+                              JSONArray corners = jason.getJSONArray("corners");
+                              JSONArray corner1 = corners.getJSONArray(0);
+                              JSONArray corner2 = corners.getJSONArray(1);
+                              JSONArray corner3 = corners.getJSONArray(2);
+                              JSONArray corner4 = corners.getJSONArray(3);
+                              Coordinate corner1Coordinate = new Coordinate((int) corner1.getDouble(0),
+                                      (int) corner1.getDouble(1));
+                              Coordinate corner2Coordinate = new Coordinate((int) corner2.getDouble(0),
+                                      (int) corner2.getDouble(1));
+                              Coordinate corner3Coordinate = new Coordinate((int) corner3.getDouble(0),
+                                      (int) corner3.getDouble(1));
+                              Coordinate corner4Coordinate = new Coordinate((int) corner4.getDouble(0),
+                                      (int) corner4.getDouble(1));
+
+                              JSONArray center = jason.getJSONArray("center");
+                              Coordinate centerCoord = new Coordinate((int) center.getDouble(0),
+                                      (int) center.getDouble(1));
+                              Obstacle newObstacle = new Obstacle(centerCoord, corner1Coordinate, corner2Coordinate,
+                                      corner3Coordinate, corner4Coordinate, res,
+                                      PhysUtils.distance(centerCoord, corner1Coordinate));
+                              // The thing is, I have to do more than just this. It returns a lot of arrays and stuff
+                              // inside of it. I have to understand what keys really are.
+                              // Aha. We can't DIRECTLY serialize it. We have to get the thingy
+
+                              // It's a square, so let's make the radius just from center to one corner
+                              newObstacle.setRadius(PhysUtils.distance(newObstacle.getCenter(), newObstacle.getCorner1()));
+                              // Ok, so the number of the obstacle should be the key right?
+                              newObstacle.setId(Integer.parseInt(key));
+                              allMyObstacles.add(newObstacle);
+                        }
+                  }
+                  machineVision.setObstacles(allMyObstacles);
+                  processObstacles(allMyObstacles, r);
+                  r.setRandomMap(machineVision.generateRandomFieldMap());
+                  // This will only work if we've set this variables for the robot.
+                  r.setCombinedMap(machineVision.generateCombinedMap(r.getGoalMap(), r.getObstacleMap(),
+                          r.getRandomMap()));
+                  firstTime = false;
             }
-            machineVision.setObstacles(allMyObstacles);
-            processObstacles(allMyObstacles, r);
-            r.setRandomMap(machineVision.generateRandomFieldMap());
-            // This will only work if we've set this variables for the robot.
-            r.setCombinedMap(machineVision.generateCombinedMap(r.getGoalMap(), r.getObstacleMap(),
-                    r.getRandomMap()));
       }
 
       /**
@@ -93,8 +136,18 @@ public class Decoder
             {
                   System.out.println(obstacles.get(j).getId() + " ");
             }
-            Scanner scanner = new Scanner(System.in);
-            int choice = Integer.parseInt(scanner.next());
+            // Always remember to change this variable to false if you're not running a Junit test
+            boolean testing = false;
+            int choice = -1;
+            if (!testing)
+            {
+                  Scanner scanner = new Scanner(System.in);
+                  choice = Integer.parseInt(scanner.next());
+            }
+            else
+            {
+                  choice = 23;
+            }
 
             for (int i = 0; i < obstacles.size(); i++)
             {
@@ -102,19 +155,27 @@ public class Decoder
                   if (cur.getId() != choice)
                   {
                         // Okay, this might be a problem: I generate a SEPARATE obstacle map for each one.
+                        cur.setRadius(PhysUtils.distance(cur.getCenter(), cur.getCorner1()));
                         obstacleMaps.add(machineVision.generateObstacleMap(1000, 1000, cur,
                                 250));
                   }
                   else
                   {
                         Goal g = new Goal(cur);
-                        machineVision.generateGoalMap(1000, 1000, g, 250);
+                        r.setGoalMap(machineVision.generateGoalMap(1000, 1000, g,
+                                250));
                   }
                   // I think we need to adjust the spread based on how well the robot avoids the obstacles
             }
             TerrainMap sol = combineObstacleMaps(obstacleMaps);
-            r.setObstacleMap(sol);
-
+            if (sol.getMyMap() == null)
+            {
+                  r.setObstacleMap(null);
+            }
+            else
+            {
+                  r.setObstacleMap(sol);
+            }
       }
 
       /**
@@ -129,7 +190,7 @@ public class Decoder
                   Vector[][] curMap = cur.getMyMap();
                   for (int j = 0; j < curMap.length; j++)
                   {
-                        for (int k = 0; k < curMap[j].length; j++)
+                        for (int k = 0; k < curMap[j].length; k++)
                         {
                               // Add the vectors
                               //combinedObstacleMap[j][k] += curMap[j][k];
@@ -137,9 +198,12 @@ public class Decoder
                               Vector here = combinedObstacleMap[j][k];
                               here.setΔX(here.getΔX() + curMap[j][k].getΔX());
                               here.setΔY(here.getΔY() + curMap[j][k].getΔY());
+                              // something about proximity type. won't be 100% accurate
+                              here.setObstacleProximity(curMap[j][k].getObstacleProximity());
                         }
                   }
             }
             return new TerrainMap(combinedObstacleMap);
       }
+
 }

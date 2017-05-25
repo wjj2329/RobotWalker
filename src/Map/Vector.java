@@ -32,6 +32,22 @@ public class Vector {
     private Degree angle;
 
     /**
+     * Center = inside of the goal/obstacle
+     * Approaching = nearby
+     * Away = not even close
+     */
+    public enum PROXIMITY_TO_OBJECT
+    {
+        CENTER, APPROACHING, AWAY
+    }
+
+    /**
+     * Proximity to goal/obstacles
+     */
+    private PROXIMITY_TO_OBJECT goalProximity = PROXIMITY_TO_OBJECT.AWAY;
+    private PROXIMITY_TO_OBJECT obstacleProximity = PROXIMITY_TO_OBJECT.AWAY;
+
+    /**
      * Public constructor for Map.Vector
      */
     public Vector(Coordinate location, double length, Degree angle)
@@ -49,7 +65,7 @@ public class Vector {
      */
     public Vector(Coordinate location)
     {
-
+        this.location = location;
     }
 
     /**
@@ -91,20 +107,46 @@ public class Vector {
         this.ΔY = ΔY;
     }
 
+    public PROXIMITY_TO_OBJECT getGoalProximity()
+    {
+        return goalProximity;
+    }
+
+    public void setGoalProximity(PROXIMITY_TO_OBJECT goalProximity)
+    {
+        this.goalProximity = goalProximity;
+    }
+
+    public PROXIMITY_TO_OBJECT getObstacleProximity()
+    {
+        return obstacleProximity;
+    }
+
+    public void setObstacleProximity(PROXIMITY_TO_OBJECT obstacleProximity)
+    {
+        this.obstacleProximity = obstacleProximity;
+    }
+
     @Override
     public String toString() {
-        StringBuilder s=new StringBuilder();;
-        s.append("Delta ");
+        StringBuilder s=new StringBuilder();
+        s.append("ΔX ");
         s.append(ΔX);
-        s.append(" Delta ");
+        s.append(" ΔY ");
         s.append(ΔY);
+        s.append("  ");
+        s.append("Type in relation to GOAL: " + goalProximity.toString());
         s.append(" ");
-        s.append("Location Coordiante ");
+        s.append("Location Coordinate ");
         s.append(location.getX());
+        s.append(", ");
+        s.append(location.getY() + " ");
+        s.append("Type in relation to OBSTACLE: " + obstacleProximity.toString());
         s.append(" ");
-        s.append(location.getY());
-        s.append("Angle of ");
-        s.append(angle.degree);
+        s.append("\n");
+        // s.append("Angle of ");
+        //s.append(angle.degree);
         return s.toString();
     }
+
 }
