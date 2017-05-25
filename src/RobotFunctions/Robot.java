@@ -1,6 +1,7 @@
 package RobotFunctions;
 
 import Map.Coordinate;
+import Map.Orientation;
 import Map.TerrainMap;
 
 /**
@@ -37,9 +38,9 @@ public class Robot
     private Coordinate currentCenterPosition;
 
     /**
-     * I don't know what this is for
+     * Two doubles
      */
-    private Coordinate orientation;
+    private Orientation orientation;
 
     /**
      * We have some sexy corners
@@ -114,12 +115,12 @@ public class Robot
         this.currentCenterPosition = currentCenterPosition;
     }
 
-    public Coordinate getOrientation()
+    public Orientation getOrientation()
     {
         return orientation;
     }
 
-    public void setOrientation(Coordinate orientation)
+    public void setOrientation(Orientation orientation)
     {
         this.orientation = orientation;
     }

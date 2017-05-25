@@ -1,6 +1,7 @@
 package RobotFunctions;
 
 import Map.Coordinate;
+import Map.Orientation;
 
 /**
  * Created by williamjones on 5/16/17.
@@ -40,6 +41,16 @@ public class PhysUtils
         double x = (double) locationOfObstacle.getX() - currentPosition.getX();
 
         return Math.atan2(y, x);
+    }
+
+    /**
+     * Potential replacement to obstacleAngle
+     */
+    public static double modifiedAngle(Orientation orientation)
+    {
+        double x = orientation.getX();
+        double y = orientation.getY();
+        return Math.acos(x) * sign(y);
     }
 
     /**

@@ -63,7 +63,7 @@ public class Decoder
             double b = orientationCoordinates.getDouble(1);
 
             // rounding...
-            r.setOrientation(new Coordinate((int)a, (int)b));
+            r.setOrientation(new Orientation(a, b));
             r.setCurrentCenterPosition(new Coordinate((int)x, (int)y));
             // do we need this? :o
             double elapsedTime = singMeASongOfJSON.getDouble("time");
@@ -169,7 +169,7 @@ public class Decoder
                   {
                         Goal g = new Goal(cur);
                         r.setGoalMap(machineVision.generateGoalMap(PhysUtils.sizeOfOurGrid,
-                                PhysUtils.sizeOfOurGrid, g,250));
+                                PhysUtils.sizeOfOurGrid, g,250, r));
                   }
                   // I think we need to adjust the spread based on how well the robot avoids the obstacles
             }

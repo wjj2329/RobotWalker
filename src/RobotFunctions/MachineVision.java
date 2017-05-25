@@ -32,10 +32,11 @@ public class MachineVision
     /**
      * Generates map for the goal
      */
-    public TerrainMap generateGoalMap(int rowDim, int colDim, Goal goal, double spreadOfField)
+    public TerrainMap generateGoalMap(int rowDim, int colDim, Goal goal, double spreadOfField, Robot r)
     {
         dimensions = new Dimensions(rowDim, colDim);
         double goalRadius = goal.getRadius();
+        Orientation orientation = r.getOrientation();
         Vector[][] goalGrid = new Vector[dimensions.getRow()][dimensions.getColumn()];
         for (int i = 0; i < goalGrid.length; i++)
         {
@@ -44,7 +45,7 @@ public class MachineVision
                 goalGrid[i][j] = new Vector(new Coordinate(i, j));
                 Vector cur = goalGrid[i][j];
                 double distanceFromGoalToVector = PhysUtils.distance(new Coordinate(i, j), goal.getCenter());
-                cur.setAngle(new Degree(PhysUtils.obstacleAngle(goal.getCenter(), new Coordinate(i, j))));
+                cur.setAngle(new Degree(PhysUtils.modifiedAngle(orientation)));
                 //  changed y-coordinate to negative to flip graph
                 Degree θ = cur.getAngle();
                 setΔXAndΔYAcceptField(θ, distanceFromGoalToVector, spreadOfField, goalRadius, computeα(), cur);
