@@ -31,14 +31,9 @@ public class Telnet
         mywriter.println("where");
         StringBuilder response=new StringBuilder();
         String line;
-        while(myreader.ready())
-        {
-            line=myreader.readLine();
-            if (!line.equals("MSE430 Server (CS 470 BYU)"))
-            {
-                response.append(line);
-            }
-        }
+
+        line=myreader.readLine();
+        response.append(myreader.readLine());
         //get stuff from myreader .readline()
 
         mywriter.close();
@@ -48,28 +43,20 @@ public class Telnet
 
     }
 
-    public String sendSpeed(double speed1, double speed2) throws IOException
+    public void  sendSpeed(int speed1, int speed2) throws IOException
     {
 
         pingsocket=new Socket("localhost", 55555);
         mywriter=new PrintWriter(pingsocket.getOutputStream(), true);
-        myreader=new BufferedReader((new InputStreamReader(pingsocket.getInputStream())));
         mywriter.println("speed "+speed1+" "+speed2);
 
-        StringBuilder response=new StringBuilder();
-        String line;
-        while(myreader.ready())
-        {
-            line=myreader.readLine();
-            response.append(line);
-        }
         //get stuff from myreader .readline()
 
         pingsocket.close();
         mywriter.close();
-        myreader.close();
 
-        return response.toString();
+
+
     }
 
     public boolean shutdown() throws IOException

@@ -38,7 +38,7 @@ public class Decoder
        * @param json: the commands in json format, to be converted
        *            into Java objects.
        */
-      public static void setMyMapsFromJson(Robot r, String json)
+      public static boolean setMyMapsFromJson(Robot r, String json)
       {
             if (machineVision == null)
             {
@@ -49,6 +49,11 @@ public class Decoder
             //System.out.println("This is it " + json);
             // RobotFunctions.RobotFunctions orientation, corners, center, and time; obstacle locations, corners, and center
             JSONObject singMeASongOfJSON = new JSONObject(json);
+            if(!singMeASongOfJSON.has("robot"))
+            {
+                  System.out.println("ROBOT NOT FOUND");
+                  return false;
+            }
             JSONObject robot = singMeASongOfJSON.getJSONObject("robot");
             JSONArray centerCoordinates = robot.getJSONArray("center");
             double x = centerCoordinates.getDouble(0);
@@ -122,6 +127,7 @@ public class Decoder
                           r.getRandomMap()));
                   firstTime = false;
             }
+            return true;
       }
 
       /**
