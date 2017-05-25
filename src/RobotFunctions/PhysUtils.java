@@ -1,7 +1,9 @@
 package RobotFunctions;
 
 import Map.Coordinate;
+import Map.Goal;
 import Map.Orientation;
+import Map.Vector;
 
 /**
  * Created by williamjones on 5/16/17.
