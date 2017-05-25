@@ -214,7 +214,7 @@ public class MachineVision
      */
     public TerrainMap generateRandomFieldMap()
     {
-        TerrainMap newmap=new TerrainMap(new Vector[1000][1000]);
+        TerrainMap newmap=new TerrainMap(new Vector[2000][2000]);
         Random myrandom=new Random();
         for (int i=0; i<newmap.getMyMap().length; i++)
         {
@@ -239,7 +239,7 @@ public class MachineVision
     {
         if (obstacleMap.getMyMap() == null || obstacleMap.getMyMap()[0][0] == null)
         {
-            obstacleMap.setMyMap(new Vector[1000][1000]);
+            obstacleMap.setMyMap(new Vector[2000][2000]);
             for (int k = 0; k < obstacleMap.getMyMap().length; k++)
             {
                 for (int l = 0; l < obstacleMap.getMyMap()[k].length; l++)
@@ -252,7 +252,7 @@ public class MachineVision
                 }
             }
         }
-        TerrainMap toReturn = new TerrainMap(new Vector[1000][1000]);
+        TerrainMap toReturn = new TerrainMap(new Vector[2000][2000]);
         toReturn.fillWithZeroes();
         for(int i=0; i<goalMap.getMyMap().length; i++)
         {

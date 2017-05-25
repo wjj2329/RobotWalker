@@ -156,13 +156,13 @@ public class Decoder
                   {
                         // Okay, this might be a problem: I generate a SEPARATE obstacle map for each one.
                         cur.setRadius(PhysUtils.distance(cur.getCenter(), cur.getCorner1()));
-                        obstacleMaps.add(machineVision.generateObstacleMap(1000, 1000, cur,
+                        obstacleMaps.add(machineVision.generateObstacleMap(2000, 2000, cur,
                                 250));
                   }
                   else
                   {
                         Goal g = new Goal(cur);
-                        r.setGoalMap(machineVision.generateGoalMap(1000, 1000, g,
+                        r.setGoalMap(machineVision.generateGoalMap(2000, 2000, g,
                                 250));
                   }
                   // I think we need to adjust the spread based on how well the robot avoids the obstacles
@@ -183,7 +183,7 @@ public class Decoder
        */
       private static TerrainMap combineObstacleMaps(ArrayList<TerrainMap> obstacleMaps)
       {
-            Vector[][] combinedObstacleMap = new Vector[1000][1000];
+            Vector[][] combinedObstacleMap = new Vector[2000][2000];
             for (int i = 0; i < obstacleMaps.size(); i++)
             {
                   TerrainMap cur = obstacleMaps.get(i);

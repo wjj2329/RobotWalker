@@ -21,15 +21,18 @@ public class Main
         {
             String s=connection.sendWhere();
             System.out.println("S is " + s);
+            Thread.sleep(1000);
             if(s.equals("None") || s.equals("") || s.equals("\n"))
             {
                 continue;
             }
+
             System.out.println(s);
             Decoder.setMyMapsFromJson(r, s);
             double directions[] = r.calculateSpeeds();
             System.out.println("I say go here "+directions[0]+" "+directions[1]);
             String speedResult = connection.sendSpeed((int) directions[0], (int) directions[1]);
+            System.out.println("my result is this "+speedResult);
             if(directions[0] == 0 && directions[1] == 0)
             {
                 connection.shutdown();

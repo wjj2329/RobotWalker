@@ -20,7 +20,7 @@ public class TerrainMap
     {
         if (myMap == null)
         {
-            myMap = new Vector[1000][1000];
+            myMap = new Vector[2000][2000];
         }
         for (int i = 0; i < myMap.length; i++)
         {
