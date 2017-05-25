@@ -19,7 +19,7 @@ public class Main
 
         while(true)
         {
-            Thread.sleep(2000);
+           // Thread.sleep(2000);
             String s=connection.sendWhere();
             System.out.println("S is " + s);
 

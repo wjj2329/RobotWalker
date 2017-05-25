@@ -221,9 +221,9 @@ public class MachineVision
             for(int j=0; j<newmap.getMyMap().length; j++)
             {
                 newmap.getMyMap()[i][j]=new Vector(new Coordinate(i, j));
-                newmap.getMyMap()[i][j].setAngle(new Degree(myrandom.nextInt(359)));
-                newmap.getMyMap()[i][j].setΔX(myrandom.nextInt(6)-3);
-                newmap.getMyMap()[i][j].setΔY(myrandom.nextInt(6)-3);//this is experimental I have no idea what it should actually be
+                newmap.getMyMap()[i][j].setAngle(new Degree(0));
+                newmap.getMyMap()[i][j].setΔX(0);
+                newmap.getMyMap()[i][j].setΔY(0);//this is experimental I have no idea what it should actually be
             }
         }
 
