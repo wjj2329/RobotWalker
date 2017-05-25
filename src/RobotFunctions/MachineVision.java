@@ -31,26 +31,42 @@ public class MachineVision
 
     /**
      * Generates map for the goal
+     * Doing this in traditional grid format, not the inverted graphics grid.
+     * This should be fine as long as we stay consistent.
      */
     public TerrainMap generateGoalMap(int rowDim, int colDim, Goal goal, double spreadOfField, Robot r)
     {
         dimensions = new Dimensions(rowDim, colDim);
-        double goalRadius = goal.getRadius();
-        Orientation orientation = r.getOrientation();
         Vector[][] goalGrid = new Vector[dimensions.getRow()][dimensions.getColumn()];
+
         for (int i = 0; i < goalGrid.length; i++)
         {
             for (int j = 0; j < goalGrid[i].length; j++)
             {
                 goalGrid[i][j] = new Vector(new Coordinate(i, j));
                 Vector cur = goalGrid[i][j];
-                double distanceFromGoalToVector = PhysUtils.distance(new Coordinate(i, j), goal.getCenter());
-                cur.setAngle(new Degree(PhysUtils.modifiedAngle(orientation)));
-                //  changed y-coordinate to negative to flip graph
-                Degree θ = cur.getAngle();
-                setΔXAndΔYAcceptField(θ, distanceFromGoalToVector, spreadOfField, goalRadius, computeα(), cur);
+                double deltaX = goal.getCenter().getX() - cur.getLocation().getX();
+                double deltaY = goal.getCenter().getY() - cur.getLocation().getY();
+                cur.setΔX(deltaX);
+                cur.setΔY(deltaY);
             }
         }
+//        double goalRadius = goal.getRadius();
+//        Orientation orientation = r.getOrientation();
+//        Vector[][] goalGrid = new Vector[dimensions.getRow()][dimensions.getColumn()];
+//        for (int i = 0; i < goalGrid.length; i++)
+//        {
+//            for (int j = 0; j < goalGrid[i].length; j++)
+//            {
+//                goalGrid[i][j] = new Vector(new Coordinate(i, j));
+//                Vector cur = goalGrid[i][j];
+//                double distanceFromGoalToVector = PhysUtils.distance(new Coordinate(i, j), goal.getCenter());
+//                cur.setAngle(new Degree(PhysUtils.modifiedAngle(orientation)));
+//                //  changed y-coordinate to negative to flip graph
+//                Degree θ = cur.getAngle();
+//                setΔXAndΔYAcceptField(θ, distanceFromGoalToVector, spreadOfField, goalRadius, computeα(), cur);
+//            }
+//        }
 
         return new TerrainMap(goalGrid);
     }
@@ -73,7 +89,8 @@ public class MachineVision
         else if (goalRadius <= distanceFromGoalToVector && distanceFromGoalToVector <= spread + goalRadius)
         {
             // ∆x=α(d−r)cos(θ) and ∆y=α(d−r)sin(θ)
-            cur.setΔX(α * (distanceFromGoalToVector - goalRadius) * Math.cos(θ.degree));
+            // change this to sin
+            cur.setΔX(α * (distanceFromGoalToVector - goalRadius) * Math.sin(θ.degree));
             cur.setΔY(α * (distanceFromGoalToVector - goalRadius) * Math.sin(θ.degree));
             cur.setGoalProximity(Vector.PROXIMITY_TO_OBJECT.APPROACHING);
         }
@@ -81,7 +98,7 @@ public class MachineVision
         else if (distanceFromGoalToVector > spread + goalRadius)
         {
             //if d > s + r, then ∆x = αs cos(θ) and ∆y = αs sin(θ)
-            cur.setΔX(α * spread * Math.cos(θ.degree));
+            cur.setΔX(α * spread * Math.sin(θ.degree));
             cur.setΔY(α * spread * Math.sin(θ.degree));
             cur.setGoalProximity(Vector.PROXIMITY_TO_OBJECT.AWAY);
         }
@@ -89,7 +106,7 @@ public class MachineVision
         else
         {
             System.out.println("it broke -__- ");
-            cur.setΔX(α * spread * Math.cos(θ.degree));
+            cur.setΔX(α * spread * Math.sin(θ.degree));
             cur.setΔY(α * spread * Math.sin(θ.degree));
         }
     }
@@ -124,7 +141,7 @@ public class MachineVision
     {
         dimensions.setRow(rowDim);
         dimensions.setColumn(colDim);
-        double obstacleRadius = obstacle.getRadius();
+//        double obstacleRadius = obstacle.getRadius();
 
         // For each vector in the field...
         Vector[][] obstacleGrid = new Vector[dimensions.getRow()][dimensions.getColumn()];
@@ -135,16 +152,18 @@ public class MachineVision
                 obstacleGrid[i][j] = new Vector(new Coordinate(i, j));
                 // ...set its deltaX and deltaY.
                 Vector cur = obstacleGrid[i][j];
-                // According to the book, this could very well be the distance from the obstacle to the AGENT.
-                // However, if we're pre-computing the field, this makes more sense.
-                // Because the agent will only be using the method if it's at the cell containing the
-                // vector that we're currently analyzing. So it will in effect be the same thing.
 
-                double distanceFromObstacleToVector = PhysUtils.distance(new Coordinate(i, j), obstacle.getCenter());
-                cur.setAngle(new Degree(PhysUtils.obstacleAngle(obstacle.getCenter(), new Coordinate(i, j))));
-                Degree θ = cur.getAngle();
-                setΔXAndΔYRejectField(θ, distanceFromObstacleToVector, spreadOfField, obstacleRadius, computeβ(), cur);
+//                double distanceFromObstacleToVector = PhysUtils.distance(new Coordinate(i, j), obstacle.getCenter());
+//                cur.setAngle(new Degree(PhysUtils.obstacleAngle(obstacle.getCenter(), new Coordinate(i, j))));
+//                Degree θ = cur.getAngle();
+//                setΔXAndΔYRejectField(θ, distanceFromObstacleToVector, spreadOfField, obstacleRadius, computeβ(),
+//                        cur);
+                double deltaX = obstacle.getCenter().getX() - cur.getLocation().getX();
+                double deltaY = obstacle.getCenter().getY() - cur.getLocation().getY();
+                cur.setΔX(-deltaX); // Should these be negative?
+                cur.setΔY(-deltaY); // They have to be repulsive in some way.
                 obstacleGrid[i][j] = cur;
+
             }
         }
         // generate the new coordinate here, based on previous coordinate.x + deltaX, prev.y + deltaY
