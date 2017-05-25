@@ -8,6 +8,11 @@ import Map.Coordinate;
  */
 public class PhysUtils
 {
+    /**
+     * CHANGE THIS BACK TO 2000 IF YOU'RE NOT RUNNING JUNIT!!!!!
+     * And back to 1000 if you are!
+     */
+    public static final int sizeOfOurGrid = 2000;
 
     public static double distance(Coordinate point1, Coordinate point2)
     {

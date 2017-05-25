@@ -41,10 +41,11 @@ public class MachineVision
         {
             for (int j = 0; j < goalGrid[i].length; j++)
             {
-                goalGrid[i][j] = new Vector(new Coordinate(i, j));
+                goalGrid[i][j] = new Vector(new Coordinate(i, -j));
                 Vector cur = goalGrid[i][j];
-                double distanceFromGoalToVector = PhysUtils.distance(new Coordinate(i, j), goal.getCenter());
-                cur.setAngle(new Degree(PhysUtils.obstacleAngle(goal.getCenter(), new Coordinate(i, j))));
+                double distanceFromGoalToVector = PhysUtils.distance(new Coordinate(i, -j), goal.getCenter());
+                cur.setAngle(new Degree(PhysUtils.obstacleAngle(goal.getCenter(), new Coordinate(i, -j))));
+                //  changed y-coordinate to negative to flip graph
                 Degree θ = cur.getAngle();
                 setΔXAndΔYAcceptField(θ, distanceFromGoalToVector, spreadOfField, goalRadius, computeα(), cur);
             }
@@ -130,7 +131,7 @@ public class MachineVision
         {
             for (int j = 0; j < obstacleGrid[i].length; j++)
             {
-                obstacleGrid[i][j] = new Vector(new Coordinate(i, j));
+                obstacleGrid[i][j] = new Vector(new Coordinate(i, -j));
                 // ...set its deltaX and deltaY.
                 Vector cur = obstacleGrid[i][j];
                 // According to the book, this could very well be the distance from the obstacle to the AGENT.
@@ -138,8 +139,8 @@ public class MachineVision
                 // Because the agent will only be using the method if it's at the cell containing the
                 // vector that we're currently analyzing. So it will in effect be the same thing.
 
-                double distanceFromObstacleToVector = PhysUtils.distance(new Coordinate(i, j), obstacle.getCenter());
-                cur.setAngle(new Degree(PhysUtils.obstacleAngle(obstacle.getCenter(), new Coordinate(i, j))));
+                double distanceFromObstacleToVector = PhysUtils.distance(new Coordinate(i, -j), obstacle.getCenter());
+                cur.setAngle(new Degree(PhysUtils.obstacleAngle(obstacle.getCenter(), new Coordinate(i, -j))));
                 Degree θ = cur.getAngle();
                 setΔXAndΔYRejectField(θ, distanceFromObstacleToVector, spreadOfField, obstacleRadius, computeβ(), cur);
                 obstacleGrid[i][j] = cur;
@@ -214,13 +215,13 @@ public class MachineVision
      */
     public TerrainMap generateRandomFieldMap()
     {
-        TerrainMap newmap=new TerrainMap(new Vector[2000][2000]);
+        TerrainMap newmap=new TerrainMap(new Vector[PhysUtils.sizeOfOurGrid][PhysUtils.sizeOfOurGrid]);
         Random myrandom=new Random();
         for (int i=0; i<newmap.getMyMap().length; i++)
         {
             for(int j=0; j<newmap.getMyMap().length; j++)
             {
-                newmap.getMyMap()[i][j]=new Vector(new Coordinate(i, j));
+                newmap.getMyMap()[i][j]=new Vector(new Coordinate(i, -j));
                 newmap.getMyMap()[i][j].setAngle(new Degree(0));
                 newmap.getMyMap()[i][j].setΔX(0);
                 newmap.getMyMap()[i][j].setΔY(0);//this is experimental I have no idea what it should actually be
@@ -239,7 +240,7 @@ public class MachineVision
     {
         if (obstacleMap.getMyMap() == null || obstacleMap.getMyMap()[0][0] == null)
         {
-            obstacleMap.setMyMap(new Vector[2000][2000]);
+            obstacleMap.setMyMap(new Vector[PhysUtils.sizeOfOurGrid][PhysUtils.sizeOfOurGrid]);
             for (int k = 0; k < obstacleMap.getMyMap().length; k++)
             {
                 for (int l = 0; l < obstacleMap.getMyMap()[k].length; l++)
@@ -252,7 +253,7 @@ public class MachineVision
                 }
             }
         }
-        TerrainMap toReturn = new TerrainMap(new Vector[2000][2000]);
+        TerrainMap toReturn = new TerrainMap(new Vector[PhysUtils.sizeOfOurGrid][PhysUtils.sizeOfOurGrid]);
         toReturn.fillWithZeroes();
         for(int i=0; i<goalMap.getMyMap().length; i++)
         {

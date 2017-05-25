@@ -1,5 +1,7 @@
 package Map;
 
+import RobotFunctions.PhysUtils;
+
 import java.util.Arrays;
 
 /**
@@ -20,7 +22,7 @@ public class TerrainMap
     {
         if (myMap == null)
         {
-            myMap = new Vector[2000][2000];
+            myMap = new Vector[PhysUtils.sizeOfOurGrid][PhysUtils.sizeOfOurGrid];
         }
         for (int i = 0; i < myMap.length; i++)
         {

@@ -4,3 +4,7 @@
 
 *.iml
 *.DS_Store
+/combinedMap2.txt
+/goalMap2.txt
+/obstacleMap2.txt
+/randomMap2.txt

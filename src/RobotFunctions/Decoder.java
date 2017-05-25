@@ -63,8 +63,8 @@ public class Decoder
             double b = orientationCoordinates.getDouble(1);
 
             // rounding...
-            r.setOrientation(new Coordinate((int)a, (int)b));
-            r.setCurrentCenterPosition(new Coordinate((int)x, (int)y));
+            r.setOrientation(new Coordinate((int)a, -(int)b));
+            r.setCurrentCenterPosition(new Coordinate((int)x, -(int)y));
             // do we need this? :o
             double elapsedTime = singMeASongOfJSON.getDouble("time");
 
@@ -87,24 +87,24 @@ public class Decoder
                               JSONArray orientation = jason.getJSONArray("orientation");
                               double xCoord = orientation.getDouble(0);
                               double yCoord = orientation.getDouble(1);
-                              Coordinate res = new Coordinate((int) xCoord, (int) yCoord);
+                              Coordinate res = new Coordinate((int) xCoord, -(int) yCoord);
                               JSONArray corners = jason.getJSONArray("corners");
                               JSONArray corner1 = corners.getJSONArray(0);
                               JSONArray corner2 = corners.getJSONArray(1);
                               JSONArray corner3 = corners.getJSONArray(2);
                               JSONArray corner4 = corners.getJSONArray(3);
                               Coordinate corner1Coordinate = new Coordinate((int) corner1.getDouble(0),
-                                      (int) corner1.getDouble(1));
+                                      -(int) corner1.getDouble(1));
                               Coordinate corner2Coordinate = new Coordinate((int) corner2.getDouble(0),
-                                      (int) corner2.getDouble(1));
+                                      -(int) corner2.getDouble(1));
                               Coordinate corner3Coordinate = new Coordinate((int) corner3.getDouble(0),
-                                      (int) corner3.getDouble(1));
+                                      -(int) corner3.getDouble(1));
                               Coordinate corner4Coordinate = new Coordinate((int) corner4.getDouble(0),
-                                      (int) corner4.getDouble(1));
+                                      -(int) corner4.getDouble(1));
 
                               JSONArray center = jason.getJSONArray("center");
                               Coordinate centerCoord = new Coordinate((int) center.getDouble(0),
-                                      (int) center.getDouble(1));
+                                      -(int) center.getDouble(1));
                               Obstacle newObstacle = new Obstacle(centerCoord, corner1Coordinate, corner2Coordinate,
                                       corner3Coordinate, corner4Coordinate, res,
                                       PhysUtils.distance(centerCoord, corner1Coordinate));
@@ -162,14 +162,14 @@ public class Decoder
                   {
                         // Okay, this might be a problem: I generate a SEPARATE obstacle map for each one.
                         cur.setRadius(PhysUtils.distance(cur.getCenter(), cur.getCorner1()));
-                        obstacleMaps.add(machineVision.generateObstacleMap(2000, 2000, cur,
-                                250));
+                        obstacleMaps.add(machineVision.generateObstacleMap(PhysUtils.sizeOfOurGrid,
+                                PhysUtils.sizeOfOurGrid, cur,250));
                   }
                   else
                   {
                         Goal g = new Goal(cur);
-                        r.setGoalMap(machineVision.generateGoalMap(2000, 2000, g,
-                                250));
+                        r.setGoalMap(machineVision.generateGoalMap(PhysUtils.sizeOfOurGrid,
+                                PhysUtils.sizeOfOurGrid, g,250));
                   }
                   // I think we need to adjust the spread based on how well the robot avoids the obstacles
             }
@@ -189,7 +189,7 @@ public class Decoder
        */
       private static TerrainMap combineObstacleMaps(ArrayList<TerrainMap> obstacleMaps)
       {
-            Vector[][] combinedObstacleMap = new Vector[2000][2000];
+            Vector[][] combinedObstacleMap = new Vector[PhysUtils.sizeOfOurGrid][PhysUtils.sizeOfOurGrid];
             for (int i = 0; i < obstacleMaps.size(); i++)
             {
                   TerrainMap cur = obstacleMaps.get(i);
@@ -200,7 +200,7 @@ public class Decoder
                         {
                               // Add the vectors
                               //combinedObstacleMap[j][k] += curMap[j][k];
-                              combinedObstacleMap[j][k] = new Vector(new Coordinate(j, k));
+                              combinedObstacleMap[j][k] = new Vector(new Coordinate(j, -k));
                               Vector here = combinedObstacleMap[j][k];
                               here.setΔX(here.getΔX() + curMap[j][k].getΔX());
                               here.setΔY(here.getΔY() + curMap[j][k].getΔY());

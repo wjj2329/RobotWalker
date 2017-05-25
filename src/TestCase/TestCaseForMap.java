@@ -136,23 +136,23 @@ public class TestCaseForMap {
         assertFalse(auntFanny.getGoalMap().equals(auntFanny.getRandomMap()));
         assertFalse(auntFanny.getGoalMap().equals(auntFanny.getCombinedMap()));
 
-//        System.out.println("Printing results to files, time 2...");
-//        PrintWriter out1 = new PrintWriter("obstacleMap2.txt");
-//        PrintWriter out2 = new PrintWriter("goalMap2.txt");
-//        PrintWriter out3 = new PrintWriter("randomMap2.txt");
-//        PrintWriter out4 = new PrintWriter("combinedMap2.txt");
-//        out1.println("Viewing generated obstacle map...\n");
-//        out1.println(auntFanny.getObstacleMap().toString());
-//        out2.println("Viewing generated goal map...\n");
-//        out2.println(auntFanny.getGoalMap().toString());
-//        out3.println("Viewing generated random map...\n");
-//        out3.println(auntFanny.getRandomMap().toString());
-//        out4.println("Viewing generated combined map...\n");
-//        out4.println(auntFanny.getCombinedMap().toString());
-//        out1.close();
-//        out2.close();
-//        out3.close();
-//        out4.close();
+        System.out.println("Printing results of obstacle/goal test to files...");
+        PrintWriter out1 = new PrintWriter("obstacleMap2.txt");
+        PrintWriter out2 = new PrintWriter("goalMap2.txt");
+        PrintWriter out3 = new PrintWriter("randomMap2.txt");
+        PrintWriter out4 = new PrintWriter("combinedMap2.txt");
+        out1.println("Viewing generated obstacle map...\n");
+        out1.println(auntFanny.getObstacleMap().toString());
+        out2.println("Viewing generated goal map...\n");
+        out2.println(auntFanny.getGoalMap().toString());
+        out3.println("Viewing generated random map...\n");
+        out3.println(auntFanny.getRandomMap().toString());
+        out4.println("Viewing generated combined map...\n");
+        out4.println(auntFanny.getCombinedMap().toString());
+        out1.close();
+        out2.close();
+        out3.close();
+        out4.close();
     }
 
 }
