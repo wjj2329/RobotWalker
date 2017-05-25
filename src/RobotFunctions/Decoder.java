@@ -62,7 +62,6 @@ public class Decoder
             double a = orientationCoordinates.getDouble(0);
             double b = orientationCoordinates.getDouble(1);
 
-            // rounding...
             r.setOrientation(new Orientation(a, b));
             r.setCurrentCenterPosition(new Coordinate((int)x, (int)y));
             // do we need this? :o
