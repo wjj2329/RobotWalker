@@ -74,6 +74,14 @@ public class Robot
         {
             arr[1] = 5;
         }
+        if (arr[0] < -5)
+        {
+            arr[0] = -5;
+        }
+        if (arr[1] < -5)
+        {
+            arr[1] = -5;
+        }
         return arr;
     }
 
