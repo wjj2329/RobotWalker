@@ -75,7 +75,6 @@ public class Decoder
                   ArrayList<Obstacle> allMyObstacles = new ArrayList<>();
 
                   final Iterator<String> keys = singMeASongOfJSON.keys();
-                  Gson yourMomUsesGson = new Gson();
                   while (keys.hasNext())
                   {
                         final String key = keys.next();

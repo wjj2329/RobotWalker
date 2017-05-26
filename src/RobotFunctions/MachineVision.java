@@ -190,7 +190,6 @@ public class MachineVision
                 cur.setΔX(-deltaX); // Should these be negative?
                 cur.setΔY(-deltaY); // They have to be repulsive in some way.
                 obstacleGrid[i][j] = cur;
-
             }
         }
         // generate the new coordinate here, based on previous coordinate.x + deltaX, prev.y + deltaY
