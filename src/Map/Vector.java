@@ -13,6 +13,20 @@ public class Vector {
      */
     private Coordinate location;
 
+    public void setLocation(Coordinate location) {
+        this.location = location;
+    }
+
+    public int getWeight() {
+        return weight;
+    }
+
+    public void setWeight(int weight) {
+        this.weight = weight;
+    }
+
+    private int weight;
+
     /**
      * ΔX: represents the strength of the arrow in the X direction,
      * which will determine how much the robot is

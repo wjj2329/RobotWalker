@@ -16,6 +16,9 @@ public class PhysUtils
      * And back to 1000 if you are!
      */
     public static final int sizeOfOurGrid = 2000;
+    public static final int radius=50;
+    public static final int MAX_WEIGHT=7;
+    public static final int STRENGTH_OF_SPHERE=radius;
 
     public static double distance(Coordinate point1, Coordinate point2)
     {

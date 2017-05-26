@@ -64,10 +64,8 @@ public class Robot
     public double[] calculateSpeeds()
     {
         double[] arr = new double[2];
-        arr[0] = combinedMap.getMyMap()[currentCenterPosition.getX()][currentCenterPosition.getY()].getΔX();
-        arr[1] = combinedMap.getMyMap()[currentCenterPosition.getX()][currentCenterPosition.getY()].getΔY();
-        arr[0] /= 50;
-        arr[1] /= 50;
+        arr[0] = goalMap.getMyMap()[currentCenterPosition.getX()][currentCenterPosition.getY()].getWeight();
+        arr[1] = goalMap.getMyMap()[currentCenterPosition.getX()][currentCenterPosition.getY()].getWeight();
         return arr;
     }
 

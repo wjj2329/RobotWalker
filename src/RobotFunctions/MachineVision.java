@@ -49,6 +49,29 @@ public class MachineVision
                 double deltaY = goal.getCenter().getY() - cur.getLocation().getY();
                 cur.setΔX(deltaX);
                 cur.setΔY(deltaY);
+                int xlengths=Math.abs(goal.getCenter().getX()-i);
+                int ylengths=Math.abs(goal.getCenter().getY()-j);//a little warning
+                if (xlengths + ylengths >PhysUtils.radius)//greater then sphere of influence
+                {
+                    cur.setWeight(PhysUtils.MAX_WEIGHT);
+                }
+                else
+                {
+
+                    if(i>goal.getCorner1().getX()||i<goal.getCorner3().getX()||j>goal.getCorner2().getY()||j<goal.getCorner4().getY())
+                    {
+                        double strength=xlengths+ylengths;
+                        strength/=PhysUtils.STRENGTH_OF_SPHERE;
+                        double weight=PhysUtils.MAX_WEIGHT*strength;
+                        cur.setWeight((int)Math.round(weight));
+                    }
+                    else
+                    {
+                            cur.setWeight(0);
+                    }
+
+                }
+
             }
         }
 //        double goalRadius = goal.getRadius();
