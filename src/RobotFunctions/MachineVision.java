@@ -58,7 +58,11 @@ public class MachineVision
                 else
                 {
 
-                    if(i>goal.getCorner1().getX()||i<goal.getCorner3().getX()||j>goal.getCorner2().getY()||j<goal.getCorner4().getY())
+                    //if(i>goal.getCorner1().getX()||i<goal.getCorner3().getX()||j>goal.getCorner2().getY()||j<goal.getCorner4().getY())
+                    if (!(i < goal.getCenter().getX() + PhysUtils.ARUCO_STOP_RADIUS
+                            && i > goal.getCenter().getY() - PhysUtils.ARUCO_STOP_RADIUS
+                            && j < goal.getCenter().getY() + PhysUtils.ARUCO_STOP_RADIUS
+                            && j > goal.getCenter().getX() - PhysUtils.ARUCO_STOP_RADIUS))
                     {
                         double strength=xlengths+ylengths;
                         strength/=PhysUtils.STRENGTH_OF_SPHERE;

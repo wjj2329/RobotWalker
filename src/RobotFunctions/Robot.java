@@ -66,7 +66,18 @@ public class Robot
         double[] arr = new double[2];
         arr[0] = goalMap.getMyMap()[currentCenterPosition.getX()][currentCenterPosition.getY()].getWeight();
         arr[1] = goalMap.getMyMap()[currentCenterPosition.getX()][currentCenterPosition.getY()].getWeight();
+        System.out.println("Current Center Position X: " + currentCenterPosition.getX());
+        System.out.println("Current Center Position Y: " + currentCenterPosition.getY());
+        System.out.println("Delta X: " + goalMap.getMyMap()[currentCenterPosition.getX()]
+                [currentCenterPosition.getY()].getΔX());
+        System.out.println("Delta Y: " + goalMap.getMyMap()[currentCenterPosition.getY()]
+                [currentCenterPosition.getY()].getΔY());
         return arr;
+    }
+
+    public void rotateMe() // Need to add a Telnet as a parameter, but it won't allow it
+    {
+
     }
 
     //<editor-fold desc="Collapsed getters and setters">

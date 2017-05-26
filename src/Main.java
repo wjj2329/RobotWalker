@@ -19,7 +19,7 @@ public class Main
 
         while(true)
         {
-           // Thread.sleep(2000);
+            Thread.sleep(2000);
             String s=connection.sendWhere();
             System.out.println("S is " + s);
 
@@ -37,10 +37,10 @@ public class Main
                 double directions[] = r.calculateSpeeds();
                 System.out.println("I say go here " + (int) Math.round(directions[0]) + " " +
                         (int) Math.round(directions[1]));
-                //connection.sendSpeed((int) Math.round(directions[0]), (int) Math.round(directions[1]));
+                connection.sendSpeed((int) Math.round(directions[0]), (int) Math.round(directions[1]));
                 if (directions[0] == 0 && directions[1] == 0) {
-                    //connection.shutdown();
-                    //return;
+                    connection.shutdown();
+                    return;
                 }
             }
 
