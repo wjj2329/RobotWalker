@@ -3,6 +3,7 @@ package RobotFunctions;
 import Map.Coordinate;
 import Map.Orientation;
 import Map.TerrainMap;
+import TelnetFunctions.Telnet;
 
 /**
  * Created by williamjones on 5/15/17.
@@ -75,7 +76,11 @@ public class Robot
         return arr;
     }
 
-    public void rotateMe() // Need to add a Telnet as a parameter, but it won't allow it
+    /**
+     * Function for rotating our robot!
+     * @param t The current telnet connection
+     */
+    public void rotateMe(Telnet t)
     {
 
     }

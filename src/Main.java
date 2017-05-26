@@ -2,6 +2,7 @@
 
 import RobotFunctions.Decoder;
 import RobotFunctions.Robot;
+import TelnetFunctions.Telnet;
 
 import java.io.IOException;
 

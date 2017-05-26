@@ -1,3 +1,5 @@
+package TelnetFunctions;
+
 import com.sun.xml.internal.ws.policy.privateutil.PolicyUtils;
 
 import java.io.BufferedReader;
@@ -8,7 +10,7 @@ import java.net.Socket;
 
 /**
  * Created by williamjones on 5/21/17.
- * Telnet client.
+ * TelnetFunctions.Telnet client.
  */
 public class Telnet
 {
@@ -16,7 +18,8 @@ public class Telnet
     private PrintWriter mywriter;
     private BufferedReader myreader;
 
-    Telnet() throws IOException {
+    public Telnet() throws IOException
+    {
 //        pingsocket=new Socket("localhost", 55555);
 //        mywriter=new PrintWriter(pingsocket.getOutputStream(), true);
 //        myreader=new BufferedReader((new InputStreamReader(pingsocket.getInputStream())));
