@@ -71,10 +71,6 @@ public class Robot
         arr[1] = goalMap.getMyMap()[currentCenterPosition.getX()][currentCenterPosition.getY()].getWeight();
         System.out.println("Current Center Position X: " + currentCenterPosition.getX());
         System.out.println("Current Center Position Y: " + currentCenterPosition.getY());
-        System.out.println("Delta X: " + goalMap.getMyMap()[currentCenterPosition.getX()]
-                [currentCenterPosition.getY()].getΔX());
-        System.out.println("Delta Y: " + goalMap.getMyMap()[currentCenterPosition.getY()]
-                [currentCenterPosition.getY()].getΔY());
         return arr;
     }
 

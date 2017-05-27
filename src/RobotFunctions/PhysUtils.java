@@ -72,8 +72,9 @@ public class PhysUtils
      */
     public static double computeNewAngleInDegrees(Coordinate cell, Coordinate goalPoint, Coordinate point)
     {
-        double opposite = Math.abs(point.getY() - goalPoint.getY());
-        double adjacent = Math.abs(cell.getX() - point.getX());
+        double opposite = Math.abs(cell.getX() - goalPoint.getX());
+        //double adjacent = Math.abs(cell.getX() - point.getX());
+        double hypotenuse = Math.abs(goalPoint.getX() - point.getY()); // consider switching x/y?
 //        double opposite = point.getY() - goalPoint.getY();
 //        double adjacent = cell.getX() - point.getX();
 //        if (opposite < 0)
@@ -89,7 +90,8 @@ public class PhysUtils
         //return Math.toDegrees(Math.atan2(adjacent, opposite)) + 90;
 
         // FIX THIS
-        return 1;
+
+        return Math.toDegrees(Math.asin(opposite / hypotenuse));
     }
 
     /**
