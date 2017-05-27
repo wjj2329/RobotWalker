@@ -51,6 +51,9 @@ public class MachineVision
                 cur.setΔY(deltaY);
                 int xlengths=Math.abs(goal.getCenter().getX()-i);
                 int ylengths=Math.abs(goal.getCenter().getY()-j);//a little warning
+                Coordinate point = new Coordinate(goal.getCenter().getX(), cur.getLocation().getY());
+                double angleToGoal = PhysUtils.computeNewAngleInDegrees(cur.getLocation(), goal.getCenter(), point);
+                cur.setAngle(new Degree(angleToGoal));
                 if (xlengths + ylengths >PhysUtils.radius)//greater then sphere of influence
                 {
                     cur.setWeight(PhysUtils.MAX_WEIGHT);
@@ -88,7 +91,7 @@ public class MachineVision
 //                goalGrid[i][j] = new Vector(new Coordinate(i, j));
 //                Vector cur = goalGrid[i][j];
 //                double distanceFromGoalToVector = PhysUtils.distance(new Coordinate(i, j), goal.getCenter());
-//                cur.setAngle(new Degree(PhysUtils.modifiedAngle(orientation)));
+//                cur.setAngle(new Degree(PhysUtils.robotCurrentAngle(orientation)));
 //                //  changed y-coordinate to negative to flip graph
 //                Degree θ = cur.getAngle();
 //                setΔXAndΔYAcceptField(θ, distanceFromGoalToVector, spreadOfField, goalRadius, computeα(), cur);
@@ -318,6 +321,12 @@ public class MachineVision
 //                            obstacleMap.getMyMap()[i][j].getΔY()
 //                            +randomMap.getMyMap()[i][j].getΔY()));
 //                }
+                Degree allDegreesSummed = new Degree(goalMap.getMyMap()[i][j].getAngle().degree);
+                // TODO: Uncomment these and set the angles for these two maps.
+                //allDegreesSummed.Add(new Degree(obstacleMap.getMyMap()[i][j].getAngle().degree));
+                //allDegreesSummed.Add(new Degree(randomMap.getMyMap()[i][j].getAngle().degree));
+                toReturn.getMyMap()[i][j].setAngle(allDegreesSummed);
+
                 toReturn.getMyMap()[i][j].setΔX(goalMap.getMyMap()[i][j].getΔX()+obstacleMap.getMyMap()[i][j].getΔX()
                         +randomMap.getMyMap()[i][j].getΔX());
                 toReturn.getMyMap()[i][j].setΔY(goalMap.getMyMap()[i][j].getΔY()+obstacleMap.getMyMap()[i][j].getΔY()

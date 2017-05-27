@@ -35,13 +35,14 @@ public class Main
 
             }
             else {
+                r.rotateMe(connection);
                 double directions[] = r.calculateSpeeds();
                 System.out.println("I say go here " + (int) Math.round(directions[0]) + " " +
                         (int) Math.round(directions[1]));
-                connection.sendSpeed((int) Math.round(directions[0]), (int) Math.round(directions[1]));
+                //connection.sendSpeed((int) Math.round(directions[0]), (int) Math.round(directions[1]));
                 if (directions[0] == 0 && directions[1] == 0) {
-                    connection.shutdown();
-                    return;
+                    //connection.shutdown();
+                    //return;
                 }
             }
 

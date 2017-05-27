@@ -20,6 +20,10 @@ public class PhysUtils
     public static final int MAX_WEIGHT=7;
     public static final int STRENGTH_OF_SPHERE=radius;
     public static final int ARUCO_STOP_RADIUS = 20;
+    /**
+     * The error for rotation, so it won't have to be exactly to any value.
+     */
+    public static final int ROTATION_ERROR = 20;
 
     public static double distance(Coordinate point1, Coordinate point2)
     {
@@ -52,11 +56,40 @@ public class PhysUtils
     /**
      * Potential replacement to obstacleAngle
      */
-    public static double modifiedAngle(Orientation orientation)
+    public static double robotCurrentAngle(Orientation orientation)
     {
         double x = orientation.getX();
         double y = orientation.getY();
         return Math.acos(x) * sign(y);
+    }
+
+    /**
+     * Computes the new angle
+     * @param point current position in the 2d array we are examining
+     * @param goalPoint the center of the goal
+     * @param cell the computed other point in the triangle
+     * @return theta, our new angle
+     */
+    public static double computeNewAngleInDegrees(Coordinate cell, Coordinate goalPoint, Coordinate point)
+    {
+        double opposite = Math.abs(point.getY() - goalPoint.getY());
+        double adjacent = Math.abs(cell.getX() - point.getX());
+//        double opposite = point.getY() - goalPoint.getY();
+//        double adjacent = cell.getX() - point.getX();
+//        if (opposite < 0)
+//        {
+//            opposite += (2 * Math.PI);
+//        }
+//        if (adjacent < 0)
+//        {
+//            adjacent += (2 * Math.PI);
+//        }
+        //System.out.println("The first result: " + Math.toDegrees(Math.atan2(opposite, adjacent)));
+        //System.out.println("The second result: " + Math.toDegrees(Math.atan2(adjacent, opposite)));
+        //return Math.toDegrees(Math.atan2(adjacent, opposite)) + 90;
+
+        // FIX THIS
+        return 1;
     }
 
     /**

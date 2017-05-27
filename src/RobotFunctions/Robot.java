@@ -5,6 +5,8 @@ import Map.Orientation;
 import Map.TerrainMap;
 import TelnetFunctions.Telnet;
 
+import java.io.IOException;
+
 /**
  * Created by williamjones on 5/15/17.
  * RobotFunctions.RobotFunctions: Class designed to encapsulate our physical robot.
@@ -80,9 +82,50 @@ public class Robot
      * Function for rotating our robot!
      * @param t The current telnet connection
      */
-    public void rotateMe(Telnet t)
+    public void rotateMe(Telnet t) throws IOException, InterruptedException
     {
+        // 1. Figure out the angles
+        double currentAngle = PhysUtils.robotCurrentAngle(orientation);
+        currentAngle = Math.toDegrees(currentAngle);
+        // Normalize
+        if (currentAngle < 0)
+        {
+            currentAngle += 360;
+        }
+        System.out.println("My initial angle is: " + currentAngle);
+        // Robot needs to face the vector angle -- needs to be pretty similar
+        // vector is at the current position of the robot
+        double degreeOfVector = combinedMap.getMyMap()
+                [currentCenterPosition.getX()][currentCenterPosition.getY()].getAngle().degree;
+        System.out.println("My modified angle is: " + degreeOfVector);
 
+//        if (currentAngle + PhysUtils.ROTATION_ERROR > degreeOfVector ||
+//                currentAngle - PhysUtils.ROTATION_ERROR < degreeOfVector)
+//        {
+//            // rotate; else, don't rotate at all, so we don't need a block there.
+//            // first, stop the robot.
+//            t.sendSpeed(0, 0);
+//            // Chill for a second bro
+//            Thread.sleep(1000);
+//            // second, make it move.
+//            while (currentAngle + PhysUtils.ROTATION_ERROR > degreeOfVector ||
+//                    currentAngle - PhysUtils.ROTATION_ERROR < degreeOfVector)
+//            {
+//                // Right now, we're just doing a basic unintelligent rotate. We can modify this later if we want.
+//                t.sendSpeed(-3, 3);
+//                String responseFromServer = t.sendWhere();
+//                if(responseFromServer.equals("None") || responseFromServer.equals("") ||
+//                        responseFromServer.equals("\n"))
+//                {
+//                    continue;
+//                }
+//                Decoder.setMyMapsFromJson(this, responseFromServer);
+//            }
+//            // Don't want it to keep rotating!
+//            t.sendSpeed(0, 0);
+//            // slow down son
+//            Thread.sleep(1000);
+//        }
     }
 
     //<editor-fold desc="Collapsed getters and setters">
