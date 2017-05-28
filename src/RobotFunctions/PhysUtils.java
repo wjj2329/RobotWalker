@@ -16,12 +16,13 @@ public class PhysUtils
      * And back to 1000 if you are!
      */
     public static final int sizeOfOurGrid = 2000;
-    public static final int radius=200;
-    public static final int MAX_WEIGHT=7;
+    public static final int radius=900; // sphere of influence eh.
+    public static final int MAX_WEIGHT=5;
     public static final int STRENGTH_OF_SPHERE=radius;
-    public static final int ARUCO_STOP_RADIUS = 20;
+    public static final int ARUCO_STOP_RADIUS = 200;
     /**
      * The error for rotation, so it won't have to be exactly to any value.
+     * It works at 30, without the 180/180 thing. Also snakes at 15 with it.
      */
     public static final int ROTATION_ERROR = 20;
 

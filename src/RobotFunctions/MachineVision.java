@@ -54,7 +54,7 @@ public class MachineVision
                 Coordinate point = new Coordinate(goal.getCenter().getX(), cur.getLocation().getY());
                 double angleToGoal = PhysUtils.computeNewAngleInDegrees(cur.getLocation(), goal.getCenter(), point);
                 cur.setAngle(new Degree(angleToGoal));
-                if (xlengths + ylengths >PhysUtils.radius)//greater then sphere of influence
+                if (xlengths + ylengths > PhysUtils.radius)//greater then sphere of influence
                 {
                     cur.setWeight(PhysUtils.MAX_WEIGHT);
                 }
@@ -62,11 +62,16 @@ public class MachineVision
                 {
 
                     //if(i>goal.getCorner1().getX()||i<goal.getCorner3().getX()||j>goal.getCorner2().getY()||j<goal.getCorner4().getY())
-                    if (!(i < goal.getCenter().getX() + PhysUtils.ARUCO_STOP_RADIUS
-                            && i > goal.getCenter().getY() - PhysUtils.ARUCO_STOP_RADIUS
-                            && j < goal.getCenter().getY() + PhysUtils.ARUCO_STOP_RADIUS
-                            && j > goal.getCenter().getX() - PhysUtils.ARUCO_STOP_RADIUS))
+//                    if (!(i < goal.getCenter().getX() + PhysUtils.ARUCO_STOP_RADIUS
+//                            && i > goal.getCenter().getY() - PhysUtils.ARUCO_STOP_RADIUS
+//                            && j < goal.getCenter().getY() + PhysUtils.ARUCO_STOP_RADIUS
+//                            && j > goal.getCenter().getX() - PhysUtils.ARUCO_STOP_RADIUS))
+                    if (i < goal.getCenter().getX() - PhysUtils.ARUCO_STOP_RADIUS ||
+                            i > goal.getCenter().getX() + PhysUtils.ARUCO_STOP_RADIUS
+                            || j < goal.getCenter().getY() - PhysUtils.ARUCO_STOP_RADIUS
+                            || j > goal.getCenter().getY() + PhysUtils.ARUCO_STOP_RADIUS)
                     {
+                        //System.out.println("Get in the zone...MIDDLE ZONE");
                         double strength=xlengths+ylengths;
                         strength/=PhysUtils.STRENGTH_OF_SPHERE;
                         double weight=PhysUtils.MAX_WEIGHT*strength;
@@ -74,7 +79,8 @@ public class MachineVision
                     }
                     else
                     {
-                            cur.setWeight(0);
+                        //System.out.println("I am setting the weight to 0");
+                        cur.setWeight(0);
                     }
 
                 }

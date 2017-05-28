@@ -92,36 +92,59 @@ public class Robot
         // Robot needs to face the vector angle -- needs to be pretty similar
         // vector is at the current position of the robot
         double degreeOfVector = combinedMap.getMyMap()
-                [currentCenterPosition.getX()][currentCenterPosition.getY()].getAngle().degree;
+            [currentCenterPosition.getX()][currentCenterPosition.getY()].getAngle().degree;
         System.out.println("My modified angle is: " + degreeOfVector);
 
-//        if (currentAngle + PhysUtils.ROTATION_ERROR > degreeOfVector ||
-//                currentAngle - PhysUtils.ROTATION_ERROR < degreeOfVector)
-//        {
-//            // rotate; else, don't rotate at all, so we don't need a block there.
-//            // first, stop the robot.
-//            t.sendSpeed(0, 0);
-//            // Chill for a second bro
-//            Thread.sleep(1000);
-//            // second, make it move.
-//            while (currentAngle + PhysUtils.ROTATION_ERROR > degreeOfVector ||
-//                    currentAngle - PhysUtils.ROTATION_ERROR < degreeOfVector)
-//            {
-//                // Right now, we're just doing a basic unintelligent rotate. We can modify this later if we want.
-//                t.sendSpeed(-3, 3);
-//                String responseFromServer = t.sendWhere();
-//                if(responseFromServer.equals("None") || responseFromServer.equals("") ||
-//                        responseFromServer.equals("\n"))
-//                {
-//                    continue;
-//                }
-//                Decoder.setMyMapsFromJson(this, responseFromServer);
-//            }
-//            // Don't want it to keep rotating!
-//            t.sendSpeed(0, 0);
-//            // slow down son
-//            Thread.sleep(1000);
-//        }
+        if (currentAngle > degreeOfVector + PhysUtils.ROTATION_ERROR ||
+                currentAngle < degreeOfVector - PhysUtils.ROTATION_ERROR)
+        {
+            // rotate; else, don't rotate at all, so we don't need a block there.
+            // first, stop the robot.
+            t.sendSpeed(0, 0);
+            // Chill for a second bro
+            //Thread.sleep(2000);
+            // second, make it move.
+            while (currentAngle > degreeOfVector + PhysUtils.ROTATION_ERROR ||
+                    currentAngle < degreeOfVector - PhysUtils.ROTATION_ERROR)
+            {
+                System.out.println("My currentAngle is: " + currentAngle);
+                System.out.println("My degreeOfVector is: " + degreeOfVector);
+                // Right now, we're just doing a basic unintelligent rotate. We can modify this later if we want.
+                //if (currentAngle - degreeOfVector < 180)
+                double normalizedAngle = currentAngle - degreeOfVector;
+                if (normalizedAngle < 0)
+                {
+                    normalizedAngle += 360;
+                }
+                if (normalizedAngle < 180)
+                {
+                    t.sendSpeed(0,5);
+                }
+                else
+                {
+                    t.sendSpeed(5, 0);
+                }
+                //t.sendSpeed(-3, 3);
+                String responseFromServer = t.sendWhere();
+                if(responseFromServer.equals("None") || responseFromServer.equals("") ||
+                        responseFromServer.equals("\n"))
+                {
+                    continue;
+                }
+                Decoder.setMyMapsFromJson(this, responseFromServer);
+                currentAngle = Math.toDegrees(PhysUtils.robotCurrentAngle(orientation));
+                if (currentAngle < 0)
+                {
+                    currentAngle += 360;
+                }
+                degreeOfVector = combinedMap.getMyMap()
+                        [currentCenterPosition.getX()][currentCenterPosition.getY()].getAngle().degree;
+            }
+            // Don't want it to keep rotating!
+            //t.sendSpeed(0, 0);
+            // slow down son
+            //Thread.sleep(1000);
+        }
     }
 
     //<editor-fold desc="Collapsed getters and setters">
