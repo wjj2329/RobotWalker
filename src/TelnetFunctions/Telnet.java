@@ -1,5 +1,6 @@
 package TelnetFunctions;
 
+import RobotFunctions.PhysUtils;
 import com.sun.xml.internal.ws.policy.privateutil.PolicyUtils;
 
 import java.io.BufferedReader;
@@ -48,7 +49,10 @@ public class Telnet
 
     public void  sendSpeed(int speed1, int speed2) throws IOException
     {
-
+        if (!PhysUtils.MOVE_ROBOT)
+        {
+            return;
+        }
         pingsocket=new Socket("localhost", 55555);
         mywriter=new PrintWriter(pingsocket.getOutputStream(), true);
         mywriter.println("speed "+speed1+" "+speed2);

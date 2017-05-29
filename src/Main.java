@@ -1,6 +1,7 @@
 
 
 import RobotFunctions.Decoder;
+import RobotFunctions.PhysUtils;
 import RobotFunctions.Robot;
 import TelnetFunctions.Telnet;
 
@@ -42,7 +43,10 @@ public class Main
                 connection.sendSpeed((int) Math.round(directions[0]), (int) Math.round(directions[1]));
                 if (directions[0] == 0 && directions[1] == 0) {
                     //connection.shutdown();
-                    return;
+                    if (PhysUtils.MOVE_ROBOT)
+                    {
+                        return;
+                    }
                 }
             }
 

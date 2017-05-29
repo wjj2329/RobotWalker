@@ -60,18 +60,11 @@ public class MachineVision
                 }
                 else
                 {
-
-                    //if(i>goal.getCorner1().getX()||i<goal.getCorner3().getX()||j>goal.getCorner2().getY()||j<goal.getCorner4().getY())
-//                    if (!(i < goal.getCenter().getX() + PhysUtils.ARUCO_STOP_RADIUS
-//                            && i > goal.getCenter().getY() - PhysUtils.ARUCO_STOP_RADIUS
-//                            && j < goal.getCenter().getY() + PhysUtils.ARUCO_STOP_RADIUS
-//                            && j > goal.getCenter().getX() - PhysUtils.ARUCO_STOP_RADIUS))
                     if (i < goal.getCenter().getX() - PhysUtils.ARUCO_STOP_RADIUS ||
                             i > goal.getCenter().getX() + PhysUtils.ARUCO_STOP_RADIUS
                             || j < goal.getCenter().getY() - PhysUtils.ARUCO_STOP_RADIUS
                             || j > goal.getCenter().getY() + PhysUtils.ARUCO_STOP_RADIUS)
                     {
-                        //System.out.println("Get in the zone...MIDDLE ZONE");
                         double strength=xlengths+ylengths;
                         strength/=PhysUtils.STRENGTH_OF_SPHERE;
                         double weight=PhysUtils.MAX_WEIGHT*strength;
@@ -79,10 +72,8 @@ public class MachineVision
                     }
                     else
                     {
-                        //System.out.println("I am setting the weight to 0");
                         cur.setWeight(0);
                     }
-
                 }
 
             }
@@ -175,6 +166,8 @@ public class MachineVision
      */
     public TerrainMap generateObstacleMap(int rowDim, int colDim, Obstacle obstacle, double spreadOfField)
     {
+        if (dimensions == null)
+            dimensions = new Dimensions(rowDim, colDim);
         dimensions.setRow(rowDim);
         dimensions.setColumn(colDim);
 //        double obstacleRadius = obstacle.getRadius();
@@ -188,16 +181,42 @@ public class MachineVision
                 obstacleGrid[i][j] = new Vector(new Coordinate(i, j));
                 // ...set its deltaX and deltaY.
                 Vector cur = obstacleGrid[i][j];
-
-//                double distanceFromObstacleToVector = PhysUtils.distance(new Coordinate(i, j), obstacle.getCenter());
-//                cur.setAngle(new Degree(PhysUtils.obstacleAngle(obstacle.getCenter(), new Coordinate(i, j))));
-//                Degree θ = cur.getAngle();
-//                setΔXAndΔYRejectField(θ, distanceFromObstacleToVector, spreadOfField, obstacleRadius, computeβ(),
-//                        cur);
                 double deltaX = obstacle.getCenter().getX() - cur.getLocation().getX();
                 double deltaY = obstacle.getCenter().getY() - cur.getLocation().getY();
                 cur.setΔX(-deltaX); // Should these be negative?
                 cur.setΔY(-deltaY); // They have to be repulsive in some way.
+
+                Coordinate point = new Coordinate(obstacle.getCenter().getX(),
+                        cur.getLocation().getY());
+                double angleToGoal = PhysUtils.computeNewAngleInDegrees(cur.getLocation(),
+                        obstacle.getCenter(), point);
+                cur.setAngle(new Degree((angleToGoal + 180) % 360));
+
+                int xlengths=Math.abs(obstacle.getCenter().getX()-i);
+                int ylengths=Math.abs(obstacle.getCenter().getY()-j);
+                if (xlengths + ylengths > PhysUtils.radius)//greater then sphere of influence
+                {
+                    cur.setWeight(0);
+                }
+                else
+                {
+                    if (i < obstacle.getCenter().getX() - PhysUtils.ARUCO_STOP_RADIUS ||
+                            i > obstacle.getCenter().getX() + PhysUtils.ARUCO_STOP_RADIUS
+                            || j < obstacle.getCenter().getY() - PhysUtils.ARUCO_STOP_RADIUS
+                            || j > obstacle.getCenter().getY() + PhysUtils.ARUCO_STOP_RADIUS)
+                    {
+                        //System.out.println("Middle obstacle range");
+                        double strength=xlengths+ylengths;
+                        strength/=PhysUtils.STRENGTH_OF_SPHERE;
+                        double weight=PhysUtils.MAX_WEIGHT*(1 - strength);
+                        cur.setWeight((int)Math.round(weight));
+                    }
+                    else
+                    {
+                        //System.out.println("Inner obstacle range");
+                        cur.setWeight(PhysUtils.MAX_WEIGHT);
+                    }
+                }
                 obstacleGrid[i][j] = cur;
             }
         }
@@ -314,29 +333,22 @@ public class MachineVision
         {
             for(int j=0; j<goalMap.getMyMap()[i].length; j++)
             {
-                //goalMap.getMyMap()[i][j].getAngle().Add(obstacleMap.getMyMap()[i][j].getAngle());
-                //goalMap.getMyMap()[i][j].getAngle().Add(randomMap.getMyMap()[i][j].getAngle());  //adds the two together includes mod
-//                if (i < 50 && j < 50)
-//                {
-//                    System.out.println("Old x: " + goalMap.getMyMap()[i][j].getΔX());
-//                    System.out.println("New x: " + (goalMap.getMyMap()[i][j].getΔX()+
-//                            obstacleMap.getMyMap()[i][j].getΔX()
-//                            +randomMap.getMyMap()[i][j].getΔX()));
-//                    System.out.println("Old y: " + goalMap.getMyMap()[i][j].getΔY());
-//                    System.out.println("New y: " + (goalMap.getMyMap()[i][j].getΔY()+
-//                            obstacleMap.getMyMap()[i][j].getΔY()
-//                            +randomMap.getMyMap()[i][j].getΔY()));
-//                }
-                Degree allDegreesSummed = new Degree(goalMap.getMyMap()[i][j].getAngle().degree);
-                // TODO: Uncomment these and set the angles for these two maps.
+                //Degree allDegreesSummed = new Degree(goalMap.getMyMap()[i][j].getAngle().degree);
                 //allDegreesSummed.Add(new Degree(obstacleMap.getMyMap()[i][j].getAngle().degree));
                 //allDegreesSummed.Add(new Degree(randomMap.getMyMap()[i][j].getAngle().degree));
-                toReturn.getMyMap()[i][j].setAngle(allDegreesSummed);
+                //toReturn.getMyMap()[i][j].setAngle(allDegreesSummed);
+
+                // TODO: do the angle crap
+                //System.out.println("The obstacle's angle is " + obstacleMap.getMyMap()[i][j].getAngle().degree);
+                toReturn.getMyMap()[i][j].setAngle(obstacleMap.getMyMap()[i][j].getAngle());
+                //System.out.println("The angle is " + toReturn.getMyMap()[i][j].getAngle().degree);
 
                 toReturn.getMyMap()[i][j].setΔX(goalMap.getMyMap()[i][j].getΔX()+obstacleMap.getMyMap()[i][j].getΔX()
                         +randomMap.getMyMap()[i][j].getΔX());
                 toReturn.getMyMap()[i][j].setΔY(goalMap.getMyMap()[i][j].getΔY()+obstacleMap.getMyMap()[i][j].getΔY()
                         +randomMap.getMyMap()[i][j].getΔY());
+                toReturn.getMyMap()[i][j].setWeight(goalMap.getMyMap()[i][j].getWeight() +
+                        obstacleMap.getMyMap()[i][j].getWeight()); // random map added later
             }
         }
         return toReturn;

@@ -166,6 +166,16 @@ public class Decoder
                   else
                   {
                         Goal g = new Goal(cur);
+//                        TerrainMap tempGoalMap = new TerrainMap(new Vector[2000][2000]);
+//                      tempGoalMap.fillWithZeroes();
+//                      r.setGoalMap(tempGoalMap);
+//
+//                      // will take this out
+//                      cur.setRadius(PhysUtils.distance(cur.getCenter(), cur.getCorner1()));
+//                      obstacleMaps.add(machineVision.generateObstacleMap(PhysUtils.sizeOfOurGrid,
+//                              PhysUtils.sizeOfOurGrid, cur,250));
+
+                        // Use the below code for goal -- the other crap is just for testing obstacles!
                         r.setGoalMap(machineVision.generateGoalMap(PhysUtils.sizeOfOurGrid,
                                 PhysUtils.sizeOfOurGrid, g,250, r));
                   }
@@ -202,8 +212,14 @@ public class Decoder
                               Vector here = combinedObstacleMap[j][k];
                               here.setΔX(here.getΔX() + curMap[j][k].getΔX());
                               here.setΔY(here.getΔY() + curMap[j][k].getΔY());
+                              here.setWeight(here.getWeight() + curMap[j][k].getWeight());
+                              //System.out.println("What is the angle? " + curMap[j][k].getAngle().degree);
+                              here.setAngle(curMap[j][k].getAngle()); // will break if more than 1 obstacle
+                            //combinedObstacleMap[j][k] = here;
+                              // TODO: do something with the angle
+
                               // something about proximity type. won't be 100% accurate
-                              here.setObstacleProximity(curMap[j][k].getObstacleProximity());
+                              //here.setObstacleProximity(curMap[j][k].getObstacleProximity());
                         }
                   }
             }

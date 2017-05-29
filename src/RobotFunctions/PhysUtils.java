@@ -20,6 +20,7 @@ public class PhysUtils
     public static final int MAX_WEIGHT=5;
     public static final int STRENGTH_OF_SPHERE=radius;
     public static final int ARUCO_STOP_RADIUS = 200;
+    public static final boolean MOVE_ROBOT = true;
     /**
      * The error for rotation, so it won't have to be exactly to any value.
      * It works at 30, without the 180/180 thing. Also snakes at 15 with it.

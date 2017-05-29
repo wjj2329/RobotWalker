@@ -67,8 +67,9 @@ public class Robot
     public double[] calculateSpeeds()
     {
         double[] arr = new double[2];
-        arr[0] = goalMap.getMyMap()[currentCenterPosition.getX()][currentCenterPosition.getY()].getWeight();
-        arr[1] = goalMap.getMyMap()[currentCenterPosition.getX()][currentCenterPosition.getY()].getWeight();
+        // Should be combinedMap, not goalMap, ultimately.
+        arr[0] = combinedMap.getMyMap()[currentCenterPosition.getX()][currentCenterPosition.getY()].getWeight();
+        arr[1] = combinedMap.getMyMap()[currentCenterPosition.getX()][currentCenterPosition.getY()].getWeight();
         System.out.println("Current Center Position X: " + currentCenterPosition.getX());
         System.out.println("Current Center Position Y: " + currentCenterPosition.getY());
         return arr;
@@ -80,6 +81,10 @@ public class Robot
      */
     public void rotateMe(Telnet t) throws IOException, InterruptedException
     {
+        if (!PhysUtils.MOVE_ROBOT)
+        {
+            return;
+        }
         // 1. Figure out the angles
         double currentAngle = PhysUtils.robotCurrentAngle(orientation);
         currentAngle = Math.toDegrees(currentAngle);
