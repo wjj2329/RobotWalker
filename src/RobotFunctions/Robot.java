@@ -84,7 +84,7 @@ public class Robot
     {
         System.out.println("My current x is " + currentCenterPosition.getX());
         System.out.println("My current y is " + currentCenterPosition.getY());
-        if (currentCenterPosition.getX() < 270 || currentCenterPosition.getX() > 1660)
+        if (currentCenterPosition.getX() < 250 || currentCenterPosition.getX() > 1640)
         {
             System.out.println("We've hit the edge.");
             if (!PhysUtils.ALREADY_ROTATED)
@@ -94,6 +94,7 @@ public class Robot
                 // recalculate maps
                 System.out.println("Calling setMyMapsFromJson in atEdge method");
                 Decoder.setMyMapsFromJson(this, json, true);
+                PhysUtils.flipBool();
             }
         }
         else
@@ -147,8 +148,9 @@ public class Robot
             // Chill for a second bro
             //Thread.sleep(2000);
             // second, make it move.
-            while (currentAngle > degreeOfVector + PhysUtils.ROTATION_ERROR ||
-                    currentAngle < degreeOfVector - PhysUtils.ROTATION_ERROR)
+            // using 5 more to make it a bit narrower.
+            while (currentAngle > degreeOfVector + PhysUtils.ROTATION_ERROR - 20 || // wider or narrower?
+                    currentAngle < degreeOfVector - PhysUtils.ROTATION_ERROR  + 20)
             {
                 //System.out.println("My currentAngle is: " + currentAngle);
                 //System.out.println("My degreeOfVector is: " + degreeOfVector);
@@ -159,13 +161,30 @@ public class Robot
                 {
                     normalizedAngle += 360;
                 }
-                if (normalizedAngle < 180)
+
+                // if I'm at the edge case, if Phys180 go 0, 6 else 6, 0
+                // if at the edge case
+                if (currentCenterPosition.getX() < 250 || currentCenterPosition.getX() > 1640)
                 {
-                    t.sendSpeed(0,6);
+                    if (PhysUtils.TURN_180)
+                    {
+                        t.sendSpeed(0, 6);
+                    }
+                    else
+                    {
+                        t.sendSpeed(6, 0);
+                    }
                 }
                 else
                 {
-                    t.sendSpeed(6, 0);
+                    if (normalizedAngle < 180)
+                    {
+                        t.sendSpeed(0, 6);
+                    }
+                    else
+                    {
+                        t.sendSpeed(6, 0);
+                    }
                 }
                 //t.sendSpeed(-3, 3);
                 String responseFromServer = t.sendWhere();

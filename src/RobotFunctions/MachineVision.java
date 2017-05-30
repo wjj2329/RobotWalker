@@ -133,7 +133,16 @@ public class MachineVision
                         System.out.println("I rotate 180");
                         seen180 = true;
                     }
-                    cur.setAngle(new Degree(180));
+                    //if (PhysUtils.TURN_180)
+                    {
+                        //System.out.println("I TURN 180");zw
+                        cur.setAngle(new Degree(180));
+                    }
+                    //else
+                    {
+                        //System.out.println("I TURN -180");
+                        //cur.setAngle(new Degree(-180)); // experiment to see if this will work
+                    }
                 }
                 toReturn[i][j] = cur;
             }

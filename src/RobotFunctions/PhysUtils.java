@@ -25,11 +25,12 @@ public class PhysUtils
     public static boolean ROTATE = true;
     public static boolean ALREADY_ROTATED = true;
     public static final boolean USE_SPECIAL = true;
+    public static boolean TURN_180 = false;
     /**
      * The error for rotation, so it won't have to be exactly to any value.
      * It works at 30, without the 180/180 thing. Also snakes at 15 with it.
      *
-     * every other ones
+     * every other one
      */
     public static final int ROTATION_ERROR = 20;
 
@@ -38,6 +39,18 @@ public class PhysUtils
         double first=point1.getX()-point2.getX();
         double second=point1.getY()-point2.getY();
         return Math.sqrt((first*first)+(second*second));
+    }
+
+    public static void flipBool()
+    {
+        if (TURN_180)
+        {
+            TURN_180 = false;
+        }
+        else
+        {
+            TURN_180 = true;
+        }
     }
 
     public static double angle(Coordinate point1, Coordinate point2)
