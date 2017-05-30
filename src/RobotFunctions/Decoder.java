@@ -32,13 +32,14 @@ public class Decoder
       {
             machineVision = new MachineVision();
       }
+
       /**
        * Comes from WHERE command
        * @param r: our robot
        * @param json: the commands in json format, to be converted
        *            into Java objects.
        */
-      public static boolean setMyMapsFromJson(Robot r, String json)
+      public static boolean setMyMapsFromJson(Robot r, String json, boolean callingFromAtEdge)
       {
             if (machineVision == null)
             {
@@ -70,6 +71,7 @@ public class Decoder
             // Obstacle computation. We can do this later, technically.
             if (firstTime) // What if I comment this out?
             {
+                System.out.println("I should see this only once");
                   //System.out.println("I should see this twice ONLY if I'm testing Junit.");
                   // Please bear in mind that one obstacle will actually become our goal!
                   ArrayList<Obstacle> allMyObstacles = new ArrayList<>();
@@ -118,12 +120,22 @@ public class Decoder
                         }
                   }
                   machineVision.setObstacles(allMyObstacles);
-                  processObstacles(allMyObstacles, r);
+
+                processObstacles(allMyObstacles, r, PhysUtils.USE_SPECIAL);
                   r.setRandomMap(machineVision.generateRandomFieldMap());
                   // This will only work if we've set this variables for the robot.
                   r.setCombinedMap(machineVision.generateCombinedMap(r.getGoalMap(), r.getObstacleMap(),
                           r.getRandomMap()));
                   firstTime = false;
+            }
+            // Is this better as an else if or just an if?
+            else if (PhysUtils.USE_SPECIAL && callingFromAtEdge)
+            {
+                System.out.println("We are in the special");
+                // Recalculate the combining of the obstacles and the goal map
+                processObstacles(machineVision.getObstacles(), r, PhysUtils.USE_SPECIAL);
+                r.setCombinedMap(machineVision.generateCombinedMap(r.getGoalMap(), r.getObstacleMap(),
+                        r.getRandomMap()));
             }
             return true;
       }
@@ -132,18 +144,25 @@ public class Decoder
        * Takes care of the obstacles
        * @param obstacles the obstacles
        */
-      private static void processObstacles(ArrayList<Obstacle> obstacles, Robot r)
+      private static void processObstacles(ArrayList<Obstacle> obstacles, Robot r, boolean special)
       {
-            System.out.println("Please select a GOAL among the following options:");
-            ArrayList<TerrainMap> obstacleMaps = new ArrayList<>();
-            for (int j = 0; j < obstacles.size(); j++)
-            {
+          ArrayList<TerrainMap> obstacleMaps = new ArrayList<>();
+          if (!special)
+          {
+              System.out.println("Please select a GOAL among the following options:");
+              for (int j = 0; j < obstacles.size(); j++)
+              {
                   System.out.println(obstacles.get(j).getId() + " ");
-            }
+              }
+          }
             // Always remember to change this variable to false if you're not running a Junit test
             boolean testing = false;
-            int choice = -1;
-            if (!testing)
+            int choice;
+            if (special)
+            {
+                choice = -1;
+            }
+            else if (!testing)
             {
                   Scanner scanner = new Scanner(System.in);
                   choice = Integer.parseInt(scanner.next());
@@ -152,16 +171,31 @@ public class Decoder
             {
                   choice = 23;
             }
+            if (obstacles.size() == 0 && choice == -1)
+            {
+                r.setGoalMap(machineVision.generateGoalMap(PhysUtils.sizeOfOurGrid,
+                        PhysUtils.sizeOfOurGrid2, new Goal(null),250, r));
+            }
 
             for (int i = 0; i < obstacles.size(); i++)
             {
+                // System.out.println("initial obstacle iteration " + i);
                   Obstacle cur = obstacles.get(i);
-                  if (cur.getId() != choice)
+                  if (choice == -1)
                   {
-                        // Okay, this might be a problem: I generate a SEPARATE obstacle map for each one.
+                      cur.setRadius(PhysUtils.distance(cur.getCenter(), cur.getCorner1()));
+                      obstacleMaps.add(machineVision.generateObstacleMap(PhysUtils.sizeOfOurGrid,
+                              PhysUtils.sizeOfOurGrid2, cur,250));
+
+                      r.setGoalMap(machineVision.generateGoalMap(PhysUtils.sizeOfOurGrid,
+                              PhysUtils.sizeOfOurGrid2, new Goal(cur),250, r));
+                  }
+                  else if (cur.getId() != choice)
+                  {
+                        // I generate a SEPARATE obstacle map for each one.
                         cur.setRadius(PhysUtils.distance(cur.getCenter(), cur.getCorner1()));
                         obstacleMaps.add(machineVision.generateObstacleMap(PhysUtils.sizeOfOurGrid,
-                                PhysUtils.sizeOfOurGrid, cur,250));
+                                PhysUtils.sizeOfOurGrid2, cur,250));
                   }
                   else
                   {
@@ -177,11 +211,13 @@ public class Decoder
 
                         // Use the below code for goal -- the other crap is just for testing obstacles!
                         r.setGoalMap(machineVision.generateGoalMap(PhysUtils.sizeOfOurGrid,
-                                PhysUtils.sizeOfOurGrid, g,250, r));
+                                PhysUtils.sizeOfOurGrid2, g,250, r));
                   }
                   // I think we need to adjust the spread based on how well the robot avoids the obstacles
             }
+            //System.out.println("before");
             TerrainMap sol = combineObstacleMaps(obstacleMaps);
+            //System.out.println("after");
             if (sol.getMyMap() == null)
             {
                   r.setObstacleMap(null);
@@ -197,31 +233,84 @@ public class Decoder
        */
       private static TerrainMap combineObstacleMaps(ArrayList<TerrainMap> obstacleMaps)
       {
-            Vector[][] combinedObstacleMap = new Vector[PhysUtils.sizeOfOurGrid][PhysUtils.sizeOfOurGrid];
-            for (int i = 0; i < obstacleMaps.size(); i++)
+          System.out.println("combineObstacleMaps");
+            Vector[][] combinedObstacleMap = new Vector[PhysUtils.sizeOfOurGrid][PhysUtils.sizeOfOurGrid2];
+            TerrainMap temp = new TerrainMap(combinedObstacleMap);
+            temp.fillWithZeroes();
+            combinedObstacleMap = temp.getMyMap();
+            if (obstacleMaps.size() == 0)
             {
-                  TerrainMap cur = obstacleMaps.get(i);
-                  Vector[][] curMap = cur.getMyMap();
-                  for (int j = 0; j < curMap.length; j++)
-                  {
-                        for (int k = 0; k < curMap[j].length; k++)
-                        {
-                              // Add the vectors
-                              //combinedObstacleMap[j][k] += curMap[j][k];
-                              combinedObstacleMap[j][k] = new Vector(new Coordinate(j, k));
-                              Vector here = combinedObstacleMap[j][k];
-                              here.setΔX(here.getΔX() + curMap[j][k].getΔX());
-                              here.setΔY(here.getΔY() + curMap[j][k].getΔY());
-                              here.setWeight(here.getWeight() + curMap[j][k].getWeight());
-                              //System.out.println("What is the angle? " + curMap[j][k].getAngle().degree);
-                              here.setAngle(curMap[j][k].getAngle()); // will break if more than 1 obstacle
-                            //combinedObstacleMap[j][k] = here;
-                              // TODO: do something with the angle
+                return temp;
+            }
+          if (obstacleMaps.size() == 1)
+            {
+                return obstacleMaps.get(0);
+            }
 
-                              // something about proximity type. won't be 100% accurate
-                              //here.setObstacleProximity(curMap[j][k].getObstacleProximity());
+            Vector[][] firstMap = obstacleMaps.get(0).getMyMap();
+            System.out.println("I'm on obstacle 0");
+            for (int i = 0; i < combinedObstacleMap.length; i++)
+            {
+                for (int j = 0; j < combinedObstacleMap[i].length; j++)
+                {
+                    combinedObstacleMap[i][j].setAngle(firstMap[i][j].getAngle());
+                    combinedObstacleMap[i][j].setWeight(firstMap[i][j].getWeight());
+                }
+            }
+
+            for (int iter = 1; iter < obstacleMaps.size(); iter++)
+            {
+                System.out.println("I'm on obstacle " + iter);
+                // For each obstacle map, factor it in.
+                TerrainMap currentMap = obstacleMaps.get(iter);
+                for (int i = 0; i < currentMap.getMyMap().length; i++)
+                {
+                    for (int j = 0; j < currentMap.getMyMap()[i].length; j++)
+                    {
+                        // Use combinedObstacleMap and currentMap
+                        // currentMap = goalMap
+                        // combinedObstacleMap = obstacleMap
+                        if (currentMap.getMyMap()[i][j].getAngle() == null)
+                        {
+                            currentMap.getMyMap()[i][j].setAngle(combinedObstacleMap[i][j].getAngle());
                         }
-                  }
+                        if (combinedObstacleMap[i][j].getAngle() == null)
+                        {
+                            combinedObstacleMap[i][j].setAngle(currentMap.getMyMap()[i][j].getAngle());
+                        }
+                        boolean weightsZero = combinedObstacleMap[i][j].getWeight() == 0
+                                || currentMap.getMyMap()[i][j].getWeight() == 0;
+                        if (!weightsZero)
+                        {
+                            Degree newAngle = new Degree(combinedObstacleMap[i][j].getAngle().degree -
+                                    currentMap.getMyMap()[i][j].getAngle().degree);
+                            if (newAngle.degree < 0)
+                            {
+                                newAngle = new Degree(newAngle.degree + 360);
+                                newAngle = new Degree(360 - newAngle.degree);
+                            }
+                            double anglesSummed = currentMap.getMyMap()[i][j].getWeight() +
+                                    combinedObstacleMap[i][j].getWeight();
+                            double angle1Pull = currentMap.getMyMap()[i][j].getWeight() / anglesSummed;
+                            double angle2Pull = combinedObstacleMap[i][j].getWeight() / anglesSummed;
+                            double additionFactor = angle1Pull * newAngle.degree;
+                            // add it to angle 1
+                            combinedObstacleMap[i][j].setAngle(new Degree
+                                    (combinedObstacleMap[i][j].getAngle().degree + additionFactor));
+
+                            // Computing weight formula
+                            double newWeight = PhysUtils.computeNewWeight(currentMap.getMyMap()[i][j],
+                                    combinedObstacleMap[i][j], newAngle);
+
+                            combinedObstacleMap[i][j].setWeight((int) Math.round(newWeight));
+                        }
+                        else
+                        {
+                            combinedObstacleMap[i][j].setAngle(currentMap.getMyMap()[i][j].getAngle());
+                            combinedObstacleMap[i][j].setWeight(currentMap.getMyMap()[i][j].getWeight());
+                        }
+                    }
+                }
             }
             return new TerrainMap(combinedObstacleMap);
       }

@@ -1,9 +1,6 @@
 package RobotFunctions;
 
-import Map.Coordinate;
-import Map.Goal;
-import Map.Orientation;
-import Map.Vector;
+import Map.*;
 
 /**
  * Created by williamjones on 5/16/17.
@@ -15,15 +12,24 @@ public class PhysUtils
      * CHANGE THIS BACK TO 2000 IF YOU'RE NOT RUNNING JUNIT!!!!!
      * And back to 1000 if you are!
      */
-    public static final int sizeOfOurGrid = 2000;
-    public static final int radius=900; // sphere of influence eh.
+    // 1920 x 1080, buffer of 30
+    public static final int sizeOfOurGrid = 1930;
+    public static final int sizeOfOurGrid2 = 1090;
+    public static final int buffer = 100;
+    public static final int radius=300; // sphere of influence eh.
     public static final int MAX_WEIGHT=5;
     public static final int STRENGTH_OF_SPHERE=radius;
-    public static final int ARUCO_STOP_RADIUS = 200;
+    public static final int ARUCO_STOP_RADIUS = 50;
     public static final boolean MOVE_ROBOT = true;
+    public static final boolean NONCRUCIAL_PRINTS = true;
+    public static boolean ROTATE = true;
+    public static boolean ALREADY_ROTATED = true;
+    public static final boolean USE_SPECIAL = true;
     /**
      * The error for rotation, so it won't have to be exactly to any value.
      * It works at 30, without the 180/180 thing. Also snakes at 15 with it.
+     *
+     * every other ones
      */
     public static final int ROTATION_ERROR = 20;
 
@@ -78,6 +84,12 @@ public class PhysUtils
         double adjacent = goalPoint.getY() - cell.getY();
 
         return Math.toDegrees(Math.abs(Math.atan2(adjacent, opposite) - Math.PI));
+    }
+
+    public static double computeNewWeight(Vector vec1, Vector vec2, Degree newAngle)
+    {
+        return Math.sqrt(Math.pow(vec1.getWeight(), 2) + Math.pow(vec2.getWeight(), 2)
+                + (2 * vec1.getWeight() * vec2.getWeight() * Math.cos(newAngle.degree)));
     }
 
     /**

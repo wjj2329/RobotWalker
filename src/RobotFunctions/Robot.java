@@ -3,6 +3,7 @@ package RobotFunctions;
 import Map.Coordinate;
 import Map.Orientation;
 import Map.TerrainMap;
+import Map.Vector;
 import TelnetFunctions.Telnet;
 
 import java.io.IOException;
@@ -70,9 +71,35 @@ public class Robot
         // Should be combinedMap, not goalMap, ultimately.
         arr[0] = combinedMap.getMyMap()[currentCenterPosition.getX()][currentCenterPosition.getY()].getWeight();
         arr[1] = combinedMap.getMyMap()[currentCenterPosition.getX()][currentCenterPosition.getY()].getWeight();
-        System.out.println("Current Center Position X: " + currentCenterPosition.getX());
-        System.out.println("Current Center Position Y: " + currentCenterPosition.getY());
+
+        if (PhysUtils.NONCRUCIAL_PRINTS)
+        {
+            System.out.println("Current Center Position X: " + currentCenterPosition.getX());
+            System.out.println("Current Center Position Y: " + currentCenterPosition.getY());
+        }
         return arr;
+    }
+
+    public void atEdge(Telnet t, String json) throws IOException
+    {
+        System.out.println("My current x is " + currentCenterPosition.getX());
+        System.out.println("My current y is " + currentCenterPosition.getY());
+        if (currentCenterPosition.getX() < 270 || currentCenterPosition.getX() > 1660)
+        {
+            System.out.println("We've hit the edge.");
+            if (!PhysUtils.ALREADY_ROTATED)
+            {
+                PhysUtils.ALREADY_ROTATED = true;
+                t.sendSpeed(0, 0);
+                // recalculate maps
+                System.out.println("Calling setMyMapsFromJson in atEdge method");
+                Decoder.setMyMapsFromJson(this, json, true);
+            }
+        }
+        else
+        {
+            PhysUtils.ALREADY_ROTATED = false;
+        }
     }
 
     /**
@@ -93,12 +120,23 @@ public class Robot
         {
             currentAngle += 360;
         }
-        System.out.println("My initial angle is: " + currentAngle);
+        //System.out.println("My initial angle is: " + currentAngle);
         // Robot needs to face the vector angle -- needs to be pretty similar
         // vector is at the current position of the robot
+
         double degreeOfVector = combinedMap.getMyMap()
             [currentCenterPosition.getX()][currentCenterPosition.getY()].getAngle().degree;
-        System.out.println("My modified angle is: " + degreeOfVector);
+
+        //System.out.println("My modified angle is: " + degreeOfVector);
+
+        //System.out.println("My currentAngle is: " + currentAngle);
+        //System.out.println("My degreeOfVector is: " + degreeOfVector);
+//        if (true)
+//        {
+//            return; // take this out ASAP
+//        }
+        System.out.println("BEFORE THE WHILE: My robot's current angle is " + currentAngle);
+        System.out.println("BEFORE THE WHILE: Robot needs to be at " + degreeOfVector);
 
         if (currentAngle > degreeOfVector + PhysUtils.ROTATION_ERROR ||
                 currentAngle < degreeOfVector - PhysUtils.ROTATION_ERROR)
@@ -112,8 +150,8 @@ public class Robot
             while (currentAngle > degreeOfVector + PhysUtils.ROTATION_ERROR ||
                     currentAngle < degreeOfVector - PhysUtils.ROTATION_ERROR)
             {
-                System.out.println("My currentAngle is: " + currentAngle);
-                System.out.println("My degreeOfVector is: " + degreeOfVector);
+                //System.out.println("My currentAngle is: " + currentAngle);
+                //System.out.println("My degreeOfVector is: " + degreeOfVector);
                 // Right now, we're just doing a basic unintelligent rotate. We can modify this later if we want.
                 //if (currentAngle - degreeOfVector < 180)
                 double normalizedAngle = currentAngle - degreeOfVector;
@@ -123,11 +161,11 @@ public class Robot
                 }
                 if (normalizedAngle < 180)
                 {
-                    t.sendSpeed(0,5);
+                    t.sendSpeed(0,6);
                 }
                 else
                 {
-                    t.sendSpeed(5, 0);
+                    t.sendSpeed(6, 0);
                 }
                 //t.sendSpeed(-3, 3);
                 String responseFromServer = t.sendWhere();
@@ -136,7 +174,7 @@ public class Robot
                 {
                     continue;
                 }
-                Decoder.setMyMapsFromJson(this, responseFromServer);
+                Decoder.setMyMapsFromJson(this, responseFromServer, false);
                 currentAngle = Math.toDegrees(PhysUtils.robotCurrentAngle(orientation));
                 if (currentAngle < 0)
                 {

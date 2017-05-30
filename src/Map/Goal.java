@@ -26,12 +26,15 @@ public class Goal
 
     public Goal(Obstacle o)
     {
-        radius = o.getRadius();
-        center = o.getCenter(); // type of copy?
-        corner1 = o.getCorner1();
-        corner2 = o.getCorner2();
-        corner3 = o.getCorner3();
-        corner4 = o.getCorner4();
+        if (o != null)
+        {
+            radius = o.getRadius();
+            center = o.getCenter(); // type of copy?
+            corner1 = o.getCorner1();
+            corner2 = o.getCorner2();
+            corner3 = o.getCorner3();
+            corner4 = o.getCorner4();
+        }
     }
 
     public double getRadius()

@@ -25,7 +25,7 @@ public class Vector {
         this.weight = weight;
     }
 
-    private int weight;
+    private int weight = 0;
 
     /**
      * ΔX: represents the strength of the arrow in the X direction,
@@ -135,6 +135,8 @@ public class Vector {
     {
         return obstacleProximity;
     }
+
+
 
     public void setObstacleProximity(PROXIMITY_TO_OBJECT obstacleProximity)
     {

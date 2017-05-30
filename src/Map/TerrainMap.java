@@ -22,15 +22,16 @@ public class TerrainMap
     {
         if (myMap == null)
         {
-            myMap = new Vector[PhysUtils.sizeOfOurGrid][PhysUtils.sizeOfOurGrid];
+            myMap = new Vector[PhysUtils.sizeOfOurGrid][PhysUtils.sizeOfOurGrid2];
         }
         for (int i = 0; i < myMap.length; i++)
         {
-            for (int j = 0; j < myMap.length; j++)
+            for (int j = 0; j < myMap[i].length; j++)
             {
                 myMap[i][j] = new Vector(new Coordinate(i, j));
                 myMap[i][j].setΔX(0);
                 myMap[i][j].setΔY(0);
+                myMap[i][j].setAngle(null);
             }
         }
     }

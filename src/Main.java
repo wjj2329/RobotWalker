@@ -23,23 +23,35 @@ public class Main
         {
             //Thread.sleep(2000);
             String s=connection.sendWhere();
-            System.out.println("S is " + s);
+            if (PhysUtils.NONCRUCIAL_PRINTS)
+            {
+                System.out.println("S is " + s);
+            }
 
            if(s.equals("None") || s.equals("") || s.equals("\n")) {
                continue;
            }
 
-            boolean success=Decoder.setMyMapsFromJson(r, s);
+           System.out.println("Calling setMyMapsFromJson in the Main class");
+            boolean success=Decoder.setMyMapsFromJson(r, s, false);
             if(!success)
             {
                 connection.sendSpeed(0,0);
-
             }
-            else {
+            else
+            {
+                // call the special goal map instead of the other one
+                if (PhysUtils.USE_SPECIAL)
+                {
+                    r.atEdge(connection, s);
+                }
                 r.rotateMe(connection);
                 double directions[] = r.calculateSpeeds();
-                System.out.println("I say go here " + (int) Math.round(directions[0]) + " " +
-                        (int) Math.round(directions[1]));
+                if (PhysUtils.NONCRUCIAL_PRINTS)
+                {
+                    System.out.println("I say go here " + (int) Math.round(directions[0]) + " " +
+                            (int) Math.round(directions[1]));
+                }
                 connection.sendSpeed((int) Math.round(directions[0]), (int) Math.round(directions[1]));
                 if (directions[0] == 0 && directions[1] == 0) {
                     //connection.shutdown();

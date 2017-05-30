@@ -47,7 +47,7 @@ public class Telnet
 
     }
 
-    public void  sendSpeed(int speed1, int speed2) throws IOException
+    public void sendSpeed(int speed1, int speed2) throws IOException
     {
         if (!PhysUtils.MOVE_ROBOT)
         {

@@ -85,7 +85,7 @@ public class TestCaseForMap {
      */
     private void goalMapTest() throws Exception
     {
-        Decoder.setMyMapsFromJson(auntFanny, goalJson);
+        Decoder.setMyMapsFromJson(auntFanny, goalJson, false);
 
         assertNotNull(auntFanny.getGoalMap());
         assertNotNull(auntFanny.getObstacleMap());
@@ -124,7 +124,7 @@ public class TestCaseForMap {
         Decoder.firstTime = true;
         // System.out.println("Boolean value of firstTime: " + Decoder.firstTime);
         auntFanny = new Robot();
-        Decoder.setMyMapsFromJson(auntFanny, obstacleJson);
+        Decoder.setMyMapsFromJson(auntFanny, obstacleJson, false);
 
         // Yay code duplication lol
         assertNotNull(auntFanny.getGoalMap());
