@@ -45,10 +45,6 @@ public class Decoder
             {
                   machineVision = new MachineVision();
             }
-            // System.out.println("Meet my neighbor, SpongeBob. HI");
-            // Map.TerrainMap  CREATE THE THREE MAPS FOR THE ROBOT
-            //System.out.println("This is it " + json);
-            // RobotFunctions.RobotFunctions orientation, corners, center, and time; obstacle locations, corners, and center
             JSONObject singMeASongOfJSON = new JSONObject(json);
             if(!singMeASongOfJSON.has("robot"))
             {
@@ -68,12 +64,11 @@ public class Decoder
             // do we need this? :o
             double elapsedTime = singMeASongOfJSON.getDouble("time");
 
-            // Obstacle computation. We can do this later, technically.
-            if (firstTime) // What if I comment this out?
+            // Obstacle computation.
+            if (firstTime)
             {
                 System.out.println("I should see this only once");
-                  //System.out.println("I should see this twice ONLY if I'm testing Junit.");
-                  // Please bear in mind that one obstacle will actually become our goal!
+                  // One obstacle will actually become our goal!
                   ArrayList<Obstacle> allMyObstacles = new ArrayList<>();
 
                   final Iterator<String> keys = singMeASongOfJSON.keys();
@@ -108,13 +103,8 @@ public class Decoder
                               Obstacle newObstacle = new Obstacle(centerCoord, corner1Coordinate, corner2Coordinate,
                                       corner3Coordinate, corner4Coordinate, res,
                                       PhysUtils.distance(centerCoord, corner1Coordinate));
-                              // The thing is, I have to do more than just this. It returns a lot of arrays and stuff
-                              // inside of it. I have to understand what keys really are.
-                              // Aha. We can't DIRECTLY serialize it. We have to get the thingy
-
                               // It's a square, so let's make the radius just from center to one corner
                               newObstacle.setRadius(PhysUtils.distance(newObstacle.getCenter(), newObstacle.getCorner1()));
-                              // Ok, so the number of the obstacle should be the key right?
                               newObstacle.setId(Integer.parseInt(key));
                               allMyObstacles.add(newObstacle);
                         }
@@ -128,7 +118,6 @@ public class Decoder
                           r.getRandomMap()));
                   firstTime = false;
             }
-            // Is this better as an else if or just an if?
             else if (PhysUtils.USE_SPECIAL && callingFromAtEdge)
             {
                 System.out.println("We are in the special");
@@ -215,9 +204,7 @@ public class Decoder
                   }
                   // I think we need to adjust the spread based on how well the robot avoids the obstacles
             }
-            //System.out.println("before");
             TerrainMap sol = combineObstacleMaps(obstacleMaps);
-            //System.out.println("after");
             if (sol.getMyMap() == null)
             {
                   r.setObstacleMap(null);
@@ -233,7 +220,6 @@ public class Decoder
        */
       private static TerrainMap combineObstacleMaps(ArrayList<TerrainMap> obstacleMaps)
       {
-          System.out.println("combineObstacleMaps");
             Vector[][] combinedObstacleMap = new Vector[PhysUtils.sizeOfOurGrid][PhysUtils.sizeOfOurGrid2];
             TerrainMap temp = new TerrainMap(combinedObstacleMap);
             temp.fillWithZeroes();
@@ -248,7 +234,6 @@ public class Decoder
             }
 
             Vector[][] firstMap = obstacleMaps.get(0).getMyMap();
-            System.out.println("I'm on obstacle 0");
             for (int i = 0; i < combinedObstacleMap.length; i++)
             {
                 for (int j = 0; j < combinedObstacleMap[i].length; j++)
@@ -260,7 +245,6 @@ public class Decoder
 
             for (int iter = 1; iter < obstacleMaps.size(); iter++)
             {
-                System.out.println("I'm on obstacle " + iter);
                 // For each obstacle map, factor it in.
                 TerrainMap currentMap = obstacleMaps.get(iter);
                 for (int i = 0; i < currentMap.getMyMap().length; i++)

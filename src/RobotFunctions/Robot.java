@@ -68,7 +68,6 @@ public class Robot
     public double[] calculateSpeeds()
     {
         double[] arr = new double[2];
-        // Should be combinedMap, not goalMap, ultimately.
         arr[0] = combinedMap.getMyMap()[currentCenterPosition.getX()][currentCenterPosition.getY()].getWeight();
         arr[1] = combinedMap.getMyMap()[currentCenterPosition.getX()][currentCenterPosition.getY()].getWeight();
 
@@ -113,7 +112,7 @@ public class Robot
         {
             return;
         }
-        // 1. Figure out the angles
+        // Figure out the angles
         double currentAngle = PhysUtils.robotCurrentAngle(orientation);
         currentAngle = Math.toDegrees(currentAngle);
         // Normalize
@@ -121,49 +120,31 @@ public class Robot
         {
             currentAngle += 360;
         }
-        //System.out.println("My initial angle is: " + currentAngle);
-        // Robot needs to face the vector angle -- needs to be pretty similar
-        // vector is at the current position of the robot
+        // Robot needs to face the vector angle
 
         double degreeOfVector = combinedMap.getMyMap()
             [currentCenterPosition.getX()][currentCenterPosition.getY()].getAngle().degree;
 
-        //System.out.println("My modified angle is: " + degreeOfVector);
-
-        //System.out.println("My currentAngle is: " + currentAngle);
-        //System.out.println("My degreeOfVector is: " + degreeOfVector);
-//        if (true)
-//        {
-//            return; // take this out ASAP
-//        }
         System.out.println("BEFORE THE WHILE: My robot's current angle is " + currentAngle);
         System.out.println("BEFORE THE WHILE: Robot needs to be at " + degreeOfVector);
 
         if (currentAngle > degreeOfVector + PhysUtils.ROTATION_ERROR ||
                 currentAngle < degreeOfVector - PhysUtils.ROTATION_ERROR)
         {
-            // rotate; else, don't rotate at all, so we don't need a block there.
             // first, stop the robot.
             t.sendSpeed(0, 0);
-            // Chill for a second bro
-            //Thread.sleep(2000);
-            // second, make it move.
-            // using 5 more to make it a bit narrower.
-            while (currentAngle > degreeOfVector + PhysUtils.ROTATION_ERROR - 20 || // wider or narrower?
-                    currentAngle < degreeOfVector - PhysUtils.ROTATION_ERROR  + 20)
+            // make it move.
+            // 20 is too narrow of a factor, but too wide messes it up as well. Find the happy medium
+            while (currentAngle > degreeOfVector + PhysUtils.ROTATION_ERROR - 10 || // wider or narrower?
+                    currentAngle < degreeOfVector - PhysUtils.ROTATION_ERROR  + 10)
             {
-                //System.out.println("My currentAngle is: " + currentAngle);
-                //System.out.println("My degreeOfVector is: " + degreeOfVector);
-                // Right now, we're just doing a basic unintelligent rotate. We can modify this later if we want.
-                //if (currentAngle - degreeOfVector < 180)
                 double normalizedAngle = currentAngle - degreeOfVector;
                 if (normalizedAngle < 0)
                 {
                     normalizedAngle += 360;
                 }
 
-                // if I'm at the edge case, if Phys180 go 0, 6 else 6, 0
-                // if at the edge case
+                // edge case, in which I need to choose a direction to turn
                 if (currentCenterPosition.getX() < 250 || currentCenterPosition.getX() > 1640)
                 {
                     if (PhysUtils.TURN_180)
@@ -186,7 +167,6 @@ public class Robot
                         t.sendSpeed(6, 0);
                     }
                 }
-                //t.sendSpeed(-3, 3);
                 String responseFromServer = t.sendWhere();
                 if(responseFromServer.equals("None") || responseFromServer.equals("") ||
                         responseFromServer.equals("\n"))
@@ -202,10 +182,6 @@ public class Robot
                 degreeOfVector = combinedMap.getMyMap()
                         [currentCenterPosition.getX()][currentCenterPosition.getY()].getAngle().degree;
             }
-            // Don't want it to keep rotating!
-            //t.sendSpeed(0, 0);
-            // slow down son
-            //Thread.sleep(1000);
         }
     }
 
