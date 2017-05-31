@@ -159,7 +159,6 @@ public class MachineVision
      */
     public TerrainMap generateObstacleMap(int rowDim, int colDim, Obstacle obstacle, double spreadOfField)
     {
-        System.out.println("generateObstacleMap called");
         if (dimensions == null)
             dimensions = new Dimensions(rowDim, colDim);
         dimensions.setRow(rowDim);
@@ -230,7 +229,7 @@ public class MachineVision
                 newmap.getMyMap()[i][j]=new Vector(new Coordinate(i, j));
                 newmap.getMyMap()[i][j].setAngle(new Degree(0));
                 newmap.getMyMap()[i][j].setΔX(0);
-                newmap.getMyMap()[i][j].setΔY(0);//this is experimental I have no idea what it should actually be
+                newmap.getMyMap()[i][j].setΔY(0);
             }
         }
 

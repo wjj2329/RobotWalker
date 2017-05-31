@@ -32,7 +32,6 @@ public class Main
                continue;
            }
 
-           System.out.println("Calling setMyMapsFromJson in the Main class");
             boolean success=Decoder.setMyMapsFromJson(r, s, false);
             if(!success)
             {

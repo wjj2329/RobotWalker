@@ -134,7 +134,7 @@ public class Robot
                 }
 
                 // edge case, in which I need to choose a direction to turn
-                if (currentCenterPosition.getX() < 250 || currentCenterPosition.getX() > 1680)
+                if (currentCenterPosition.getX() < 250 || currentCenterPosition.getX() > 1680 && PhysUtils.USE_SPECIAL)
                 {
                     if (PhysUtils.TURN_180)
                     {

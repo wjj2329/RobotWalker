@@ -24,7 +24,7 @@ public class PhysUtils
     public static final boolean NONCRUCIAL_PRINTS = true;
     public static boolean ROTATE = true;
     public static boolean ALREADY_ROTATED = true;
-    public static final boolean USE_SPECIAL = true;
+    public static final boolean USE_SPECIAL = false;
     public static boolean TURN_180 = false;
     /**
      * The error for rotation, so it won't have to be exactly to any value.
