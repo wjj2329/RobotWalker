@@ -71,27 +71,18 @@ public class Robot
         arr[0] = combinedMap.getMyMap()[currentCenterPosition.getX()][currentCenterPosition.getY()].getWeight();
         arr[1] = combinedMap.getMyMap()[currentCenterPosition.getX()][currentCenterPosition.getY()].getWeight();
 
-        if (PhysUtils.NONCRUCIAL_PRINTS)
-        {
-            System.out.println("Current Center Position X: " + currentCenterPosition.getX());
-            System.out.println("Current Center Position Y: " + currentCenterPosition.getY());
-        }
         return arr;
     }
 
     public void atEdge(Telnet t, String json) throws IOException
     {
-        System.out.println("My current x is " + currentCenterPosition.getX());
-        System.out.println("My current y is " + currentCenterPosition.getY());
-        if (currentCenterPosition.getX() < 250 || currentCenterPosition.getX() > 1640)
+        if (currentCenterPosition.getX() < 250 || currentCenterPosition.getX() > 1680)
         {
-            System.out.println("We've hit the edge.");
             if (!PhysUtils.ALREADY_ROTATED)
             {
                 PhysUtils.ALREADY_ROTATED = true;
                 t.sendSpeed(0, 0);
                 // recalculate maps
-                System.out.println("Calling setMyMapsFromJson in atEdge method");
                 Decoder.setMyMapsFromJson(this, json, true);
                 PhysUtils.flipBool();
             }
@@ -125,18 +116,16 @@ public class Robot
         double degreeOfVector = combinedMap.getMyMap()
             [currentCenterPosition.getX()][currentCenterPosition.getY()].getAngle().degree;
 
-        System.out.println("BEFORE THE WHILE: My robot's current angle is " + currentAngle);
-        System.out.println("BEFORE THE WHILE: Robot needs to be at " + degreeOfVector);
-
-        if (currentAngle > degreeOfVector + PhysUtils.ROTATION_ERROR ||
-                currentAngle < degreeOfVector - PhysUtils.ROTATION_ERROR)
+        if (currentAngle > degreeOfVector + PhysUtils.ROTATION_ERROR + 15 ||
+                currentAngle < degreeOfVector - PhysUtils.ROTATION_ERROR - 15)
         {
             // first, stop the robot.
             t.sendSpeed(0, 0);
             // make it move.
-            // 20 is too narrow of a factor, but too wide messes it up as well. Find the happy medium
-            while (currentAngle > degreeOfVector + PhysUtils.ROTATION_ERROR - 10 || // wider or narrower?
-                    currentAngle < degreeOfVector - PhysUtils.ROTATION_ERROR  + 10)
+            // 20 is too narrow of a factor, but too wide messes it up as well. Find the happy medium.
+            // Still need to test this with OBSTACLES! 10 doesn't work
+            while (currentAngle > degreeOfVector + PhysUtils.ROTATION_ERROR - 15 || // wider or narrower?
+                    currentAngle < degreeOfVector - PhysUtils.ROTATION_ERROR  + 15)
             {
                 double normalizedAngle = currentAngle - degreeOfVector;
                 if (normalizedAngle < 0)
@@ -145,7 +134,7 @@ public class Robot
                 }
 
                 // edge case, in which I need to choose a direction to turn
-                if (currentCenterPosition.getX() < 250 || currentCenterPosition.getX() > 1640)
+                if (currentCenterPosition.getX() < 250 || currentCenterPosition.getX() > 1680)
                 {
                     if (PhysUtils.TURN_180)
                     {

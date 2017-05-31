@@ -97,16 +97,6 @@ public class MachineVision
     private boolean seen180 = false;
     public TerrainMap generateGoalMapSpecial(int rowDim, int colDim, Robot r)
     {
-        //double for loop, vectors with weights of 4, angles of 0
-        // if rotate, angle is 0, otherwise, it is 180
-        // function to check for the edge. if it is, stop , recalculate the maps, and keep going.
-        // then you would rotate there. This would be called before the rotate.
-
-        // if robot.getPositionX < 0 + padding || robot.getPositionX > 1920 - padding
-        // and if the boolean is false (as part of it)
-
-        // how to know when it is good to go?
-        // at the very end?
         dimensions = new Dimensions(rowDim, colDim);
         Vector[][] toReturn = new Vector[dimensions.getRow()][dimensions.getColumn()];
         for (int i = 0; i < toReturn.length; i++)
@@ -133,16 +123,7 @@ public class MachineVision
                         System.out.println("I rotate 180");
                         seen180 = true;
                     }
-                    //if (PhysUtils.TURN_180)
-                    {
-                        //System.out.println("I TURN 180");zw
-                        cur.setAngle(new Degree(180));
-                    }
-                    //else
-                    {
-                        //System.out.println("I TURN -180");
-                        //cur.setAngle(new Degree(-180)); // experiment to see if this will work
-                    }
+                    cur.setAngle(new Degree(180));
                 }
                 toReturn[i][j] = cur;
             }
@@ -183,7 +164,6 @@ public class MachineVision
             dimensions = new Dimensions(rowDim, colDim);
         dimensions.setRow(rowDim);
         dimensions.setColumn(colDim);
-//        double obstacleRadius = obstacle.getRadius();
 
         // For each vector in the field...
         Vector[][] obstacleGrid = new Vector[dimensions.getRow()][dimensions.getColumn()];
@@ -218,7 +198,6 @@ public class MachineVision
                             || j < obstacle.getCenter().getY() - PhysUtils.ARUCO_STOP_RADIUS
                             || j > obstacle.getCenter().getY() + PhysUtils.ARUCO_STOP_RADIUS)
                     {
-                        //System.out.println("Middle obstacle range");
                         double strength=xlengths+ylengths;
                         strength/=PhysUtils.STRENGTH_OF_SPHERE;
                         double weight=PhysUtils.MAX_WEIGHT*(1 - strength);
@@ -226,7 +205,6 @@ public class MachineVision
                     }
                     else
                     {
-                        //System.out.println("Inner obstacle range");
                         cur.setWeight(PhysUtils.MAX_WEIGHT);
                     }
                 }
@@ -277,7 +255,6 @@ public class MachineVision
                     myNew.setΔX(0);
                     myNew.setΔY(0);
                     obstacleMap.getMyMap()[k][l] = myNew;
-                    //System.out.println("My new's delta x is " + myNew.getΔX());
                 }
             }
         }

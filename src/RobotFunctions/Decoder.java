@@ -61,13 +61,11 @@ public class Decoder
 
             r.setOrientation(new Orientation(a, b));
             r.setCurrentCenterPosition(new Coordinate((int)x, (int)y));
-            // do we need this? :o
             double elapsedTime = singMeASongOfJSON.getDouble("time");
 
             // Obstacle computation.
             if (firstTime)
             {
-                System.out.println("I should see this only once");
                   // One obstacle will actually become our goal!
                   ArrayList<Obstacle> allMyObstacles = new ArrayList<>();
 
@@ -120,7 +118,6 @@ public class Decoder
             }
             else if (PhysUtils.USE_SPECIAL && callingFromAtEdge)
             {
-                System.out.println("We are in the special");
                 // Recalculate the combining of the obstacles and the goal map
                 processObstacles(machineVision.getObstacles(), r, PhysUtils.USE_SPECIAL);
                 r.setCombinedMap(machineVision.generateCombinedMap(r.getGoalMap(), r.getObstacleMap(),
@@ -168,7 +165,6 @@ public class Decoder
 
             for (int i = 0; i < obstacles.size(); i++)
             {
-                // System.out.println("initial obstacle iteration " + i);
                   Obstacle cur = obstacles.get(i);
                   if (choice == -1)
                   {
@@ -189,20 +185,9 @@ public class Decoder
                   else
                   {
                         Goal g = new Goal(cur);
-//                        TerrainMap tempGoalMap = new TerrainMap(new Vector[2000][2000]);
-//                      tempGoalMap.fillWithZeroes();
-//                      r.setGoalMap(tempGoalMap);
-//
-//                      // will take this out
-//                      cur.setRadius(PhysUtils.distance(cur.getCenter(), cur.getCorner1()));
-//                      obstacleMaps.add(machineVision.generateObstacleMap(PhysUtils.sizeOfOurGrid,
-//                              PhysUtils.sizeOfOurGrid, cur,250));
-
-                        // Use the below code for goal -- the other crap is just for testing obstacles!
                         r.setGoalMap(machineVision.generateGoalMap(PhysUtils.sizeOfOurGrid,
                                 PhysUtils.sizeOfOurGrid2, g,250, r));
                   }
-                  // I think we need to adjust the spread based on how well the robot avoids the obstacles
             }
             TerrainMap sol = combineObstacleMaps(obstacleMaps);
             if (sol.getMyMap() == null)

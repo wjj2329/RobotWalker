@@ -5,16 +5,6 @@ import Map.Coordinate;
 /**
  * Created by Alex on 5/17/17.
  * Data package for an obstacle in the terrain map.
- * We might need one of these for a GOAL object, too.
- *
- * where to get the ARUCO libraries?
- * install pyserial?
- *
- * coordinates are openCV image coordinates, tied to the size of the screen and has the
- *  weird upper LH is 0,0 configuration
- * Should be x, y.
- *
- * What do we do with the orientation variable?
  *
  */
 public class Obstacle

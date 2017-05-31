@@ -5,6 +5,7 @@ import Map.Obstacle;
 
 /**
  * Created by Alex on 5/23/17.
+ * Class representing a goal on the obstacle field.
  */
 public class Goal
 {

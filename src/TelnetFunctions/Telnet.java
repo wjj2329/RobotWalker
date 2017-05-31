@@ -21,9 +21,7 @@ public class Telnet
 
     public Telnet() throws IOException
     {
-//        pingsocket=new Socket("localhost", 55555);
-//        mywriter=new PrintWriter(pingsocket.getOutputStream(), true);
-//        myreader=new BufferedReader((new InputStreamReader(pingsocket.getInputStream())));
+
     }
 
 
