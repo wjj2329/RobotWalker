@@ -116,16 +116,16 @@ public class Robot
         double degreeOfVector = combinedMap.getMyMap()
             [currentCenterPosition.getX()][currentCenterPosition.getY()].getAngle().degree;
 
-        if (currentAngle > degreeOfVector + PhysUtils.ROTATION_ERROR + 15 ||
-                currentAngle < degreeOfVector - PhysUtils.ROTATION_ERROR - 15)
+        if (currentAngle > degreeOfVector + PhysUtils.ROTATION_ERROR ||
+                currentAngle < degreeOfVector - PhysUtils.ROTATION_ERROR)
         {
             // first, stop the robot.
             t.sendSpeed(0, 0);
             // make it move.
             // 20 is too narrow of a factor, but too wide messes it up as well. Find the happy medium.
             // Still need to test this with OBSTACLES! 10 doesn't work
-            while (currentAngle > degreeOfVector + PhysUtils.ROTATION_ERROR - 15 || // wider or narrower?
-                    currentAngle < degreeOfVector - PhysUtils.ROTATION_ERROR  + 15)
+            while (currentAngle > degreeOfVector + PhysUtils.ROTATION_ERROR || // wider or narrower?
+                    currentAngle < degreeOfVector - PhysUtils.ROTATION_ERROR)
             {
                 double normalizedAngle = currentAngle - degreeOfVector;
                 if (normalizedAngle < 0)
